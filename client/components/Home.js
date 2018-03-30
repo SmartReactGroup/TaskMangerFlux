@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export default function Home() {
   return (
@@ -6,5 +6,5 @@ export default function Home() {
       <h2>Home</h2>
       <p>Welcome to the site!</p>
     </div>
-  );
+  )
 }

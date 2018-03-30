@@ -1,17 +1,17 @@
-import React from 'react';
-import { NavLink } from 'fluxible-router';
+import React from 'react'
+import { NavLink } from 'fluxible-router'
 
 class Nav extends React.Component {
   render() {
-    const selected = this.props.currentRoute;
-    const links = this.props.links;
+    const selected = this.props.currentRoute
+    const links = this.props.links
 
     const linkHTML = Object.keys(links).map((name) => {
-      var className = '';
-      var link = links[name];
+      let className = ''
+      const link = links[name]
 
       if (selected && selected.name === name) {
-        className = 'pure-menu-selected';
+        className = 'pure-menu-selected'
       }
 
       return (
@@ -20,16 +20,16 @@ class Nav extends React.Component {
             {link.title}
           </NavLink>
         </li>
-      );
-    });
+      )
+    })
 
-    return <ul className="pure-menu pure-menu-open pure-menu-horizontal">{linkHTML}</ul>;
+    return <ul className="pure-menu pure-menu-open pure-menu-horizontal">{linkHTML}</ul>
   }
 }
 
 Nav.defaultProps = {
   selected: null,
   links: {}
-};
+}
 
-export default Nav;
+export default Nav

@@ -1,9 +1,11 @@
-import React from 'react';
-import ApplicationStore from '../stores/ApplicationStore';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ApplicationStore from '../stores/ApplicationStore'
 
 export default function Html(props) {
+  const { style, main, common, essentials } = props.assets
   return (
-    <html>
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <title>{props.context.getStore(ApplicationStore).getPageTitle()}</title>
@@ -13,8 +15,11 @@ export default function Html(props) {
       <body>
         <div id="app" dangerouslySetInnerHTML={{ __html: props.markup }} />
         <script dangerouslySetInnerHTML={{ __html: props.state }} />
-        <script src={'/public/js/' + props.clientFile} />
+
+        <script src={common} />
+        <script src={main} />
+        {essentials && <script src={essentials} />}
       </body>
     </html>
-  );
+  )
 }
