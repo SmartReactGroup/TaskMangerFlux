@@ -17,6 +17,11 @@
     "arrow-parens": 0,
     "react/no-danger": 0,
     "max-len": [2, 150],
-    "react/sort-comp": 0
+    "react/sort-comp": 0,
+    "react/prefer-stateless-function": 0,
+    "no-underscore-dangle": 0
+  },
+  "globals": {
+    "document": true
   }
 }

@@ -12,4 +12,4 @@ const app = new Fluxible({
 app.registerStore(RouteStore)
 app.registerStore(ApplicationStore)
 
-module.exports = app
+export default app
