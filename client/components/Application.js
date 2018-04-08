@@ -1,11 +1,21 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connectToStores, provideContext } from 'fluxible-addons-react'
 import { handleHistory } from 'fluxible-router'
+import { Nav } from '../components'
 import pages from '../../configs/routes'
-import Nav from './Nav'
 import ApplicationStore from '../stores/ApplicationStore'
 
 class Application extends React.Component {
+
+  componentDidUpdate(prevProps, prevState) {
+    const newProps = this.props
+    if (newProps.pageTitle === prevProps.pageTitle) {
+      return
+    }
+    document.title = newProps.pageTitle
+  }
+
   render() {
     const Handler = this.props.currentRoute.handler
     return (
@@ -15,14 +25,10 @@ class Application extends React.Component {
       </div>
     )
   }
+}
 
-  componentDidUpdate(prevProps, prevState) {
-    const newProps = this.props
-    if (newProps.pageTitle === prevProps.pageTitle) {
-      return
-    }
-    document.title = newProps.pageTitle
-  }
+Application.contextTypes = {
+  executeAction: PropTypes.func
 }
 
 export default provideContext(

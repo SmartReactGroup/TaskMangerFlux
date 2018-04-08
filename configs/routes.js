@@ -1,5 +1,4 @@
-import Home from '../client/components/Home'
-import About from '../client/components/About'
+import { Home, About } from '../client/components'
 
 export default {
   home: {

@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom'
 import debug from 'debug'
 import { createElementWithContext } from 'fluxible-addons-react'
 import app from './app'
-import './app.scss'
+import './components/app.scss'
 
 const debugClient = debug('taskmangerflux')
 const dehydratedState = window.App // Sent from the server
