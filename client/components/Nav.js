@@ -1,10 +1,18 @@
 import React from 'react'
+import PropsTypes from 'prop-types'
 import { NavLink } from 'fluxible-router'
 
 class Nav extends React.Component {
+
+  // static propTypes = {
+  //   // selected: PropsTypes.object,
+  //   currentRoute: PropsTypes.object,
+  //   links: PropsTypes.object
+  // }
+
   render() {
     const selected = this.props.currentRoute
-    const links = this.props.links
+    const { links } = this.props
 
     const linkHTML = Object.keys(links).map((name) => {
       let className = ''
@@ -28,7 +36,7 @@ class Nav extends React.Component {
 }
 
 Nav.defaultProps = {
-  selected: null,
+  // selected: null,
   links: {}
 }
 

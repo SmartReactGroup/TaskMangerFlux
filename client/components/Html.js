@@ -11,6 +11,7 @@ export default function Html(props) {
         <title>{props.context.getStore(ApplicationStore).getPageTitle()}</title>
         <meta name="viewport" content="width=device-width, user-scalable=no" />
         <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css" />
+        <link href={style} rel="stylesheet" />
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={{ __html: props.markup }} />
@@ -23,3 +24,11 @@ export default function Html(props) {
     </html>
   )
 }
+
+Html.propTypes = {
+  assets: PropTypes.object,
+  context: PropTypes.object,
+  markup: PropTypes.string,
+  state: PropTypes.string
+}
+

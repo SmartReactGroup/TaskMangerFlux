@@ -1,7 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const devConfigs = require('./configs/development')
@@ -15,15 +13,17 @@ module.exports = function makeWebpackConfig(mode) {
   const BUILD = mode === 'build'
   const TEST = mode === 'test'
   const DEV = mode === 'dev'
+  const DEV_PUBLIC_PATH = `http://${devConfigs.host}:${devConfigs.port}/`
 
   /**
    * Config
    * Reference: http://webpack.github.io/docs/configuration.html
    * This is the object where all configuration gets set
    */
-  const config = {}
-
-  config.mode = DEV ? 'development' : 'production'
+  const config = {
+    mode: DEV ? 'development' : 'production',
+    cache: DEV
+  }
 
   /**
    * Entry
@@ -32,9 +32,11 @@ module.exports = function makeWebpackConfig(mode) {
    * Karma will set this when it's a test build
    */
   if (!TEST) {
-    config.entry = {
-      app: './client/client.js'
-    }
+    config.entry = ['./client/client.js']
+  }
+
+  if (DEV) {
+    config.entry.unshift(`webpack-dev-server/client?${DEV_PUBLIC_PATH}`, 'webpack/hot/dev-server')
   }
 
   /**
@@ -52,7 +54,7 @@ module.exports = function makeWebpackConfig(mode) {
 
       // Output path from the view of the page
       // Uses webpack-dev-server in development
-      publicPath: BUILD ? '/' : `http://${devConfigs.host}:${devConfigs.port}/`,
+      publicPath: BUILD ? '/' : DEV_PUBLIC_PATH,
 
       // Filename for entry points
       // Only adds hash in build mode
@@ -65,7 +67,7 @@ module.exports = function makeWebpackConfig(mode) {
   }
 
   config.resolve = {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js']
     // alias: {
     //   primus: path.resolve(__dirname, 'client/components/socket/primus.js')
     // }
@@ -101,12 +103,10 @@ module.exports = function makeWebpackConfig(mode) {
    * List: http://webpack.github.io/docs/list-of-loaders.html
    * This handles most of the magic responsible for converting modules
    */
-
   // Initialize module
   config.module = {
     rules: [
       {
-        // JS LOADER
         // Reference: https://github.com/babel/babel-loader
         // Transpile .js files using babel-loader
         // Compiles ES6 and ES7 into ES5 code
@@ -126,14 +126,18 @@ module.exports = function makeWebpackConfig(mode) {
                     modules: false
                   }
                 ]
-              ]
+              ],
+              // This is a feature of `babel-loader` for Webpack (not Babel itself).
+              // It enables caching results in ./node_modules/.cache/babel-loader/
+              // directory for faster rebuilds.
+              cacheDirectory: true,
+              plugins: ['react-hot-loader/babel']
             }
           }
         ],
         exclude: /node_modules/
       },
       {
-        // ASSET LOADER
         // Reference: https://github.com/webpack/file-loader
         // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output
         // Rename the file using the asset hash
@@ -144,43 +148,61 @@ module.exports = function makeWebpackConfig(mode) {
         use: 'file-loader'
       },
       {
-        // HTML LOADER
         // Reference: https://github.com/webpack/raw-loader
         // Allow loading html through js
         test: /\.html$/,
         use: 'raw-loader'
       },
       {
-        // CSS LOADER
-        // Reference: https://github.com/webpack/css-loader
-        // Allow loading css through js
-        //
-        // Reference: https://github.com/postcss/postcss-loader
-        // Postprocess your css with PostCSS plugins
-        test: /\.css$/,
-        use: ['raw-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        // SASS LOADER
-        // Reference: https://github.com/jtangelder/sass-loader
-        test: /\.(scss|sass)$/,
-        use: ['raw-loader', 'sass-loader']
+        test: /\.(sa|sc|c)ss$/,
+        use: ['extracted-loader'].concat(
+          ExtractTextPlugin.extract({
+            use: [
+              'babel-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  url: true,
+                  minimize: !DEV,
+                  sourceMap: DEV,
+                  importLoaders: 2
+                }
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  sourceMap: DEV,
+                  plugins: [
+                    require('autoprefixer')
+                  ]
+                }
+              },
+              {
+                loader: 'sass-loader',
+                options: {
+                  sourceMap: DEV
+                }
+              }
+            ]
+          })
+        )
       }
     ]
   }
 
   /**
-     * Plugins
-     * Reference: http://webpack.github.io/docs/configuration.html#plugins
-     * List: http://webpack.github.io/docs/list-of-plugins.html
-     */
+   * Plugins
+   * Reference: http://webpack.github.io/docs/configuration.html#plugins
+   * List: http://webpack.github.io/docs/list-of-plugins.html
+   */
   config.plugins = [
     // Reference: https://github.com/webpack/extract-text-webpack-plugin
     // Extract css files
     // Disabled when in test mode or not in build mode
     new ExtractTextPlugin({
       filename: DEV ? '[name].css' : '[name].[hash].css',
-      disable: !BUILD || TEST
+      disable: false
+      // allChunks: !DEV
     }),
 
     new webpack.LoaderOptionsPlugin({
@@ -200,7 +222,16 @@ module.exports = function makeWebpackConfig(mode) {
 
   if (!TEST) {
     config.optimization = {
-      minimizer: []
+      minimizer: [],
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'common',
+            chunks: 'all'
+          }
+        }
+      }
     }
   }
 
@@ -227,8 +258,6 @@ module.exports = function makeWebpackConfig(mode) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin())
   }
 
-  config.cache = DEV
-
   if (TEST) {
     config.stats = {
       colors: true,
@@ -242,30 +271,21 @@ module.exports = function makeWebpackConfig(mode) {
    * Reference: http://webpack.github.io/docs/webpack-dev-server.html
    */
   config.devServer = {
-    contentBase: './client/',
-    hot: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:9000',
-        secure: false
-      },
-      '/auth': {
-        target: 'http://localhost:9000',
-        secure: false
-      },
-      '/primus': {
-        target: 'http://localhost:9000',
-        secure: false,
-        ws: true
-      }
-    },
-    stats: {
-      modules: false,
-      cached: false,
-      colors: true,
-      chunks: false
-    },
-    historyApiFallback: true
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:9000',
+    //     secure: false
+    //   },
+    //   '/auth': {
+    //     target: 'http://localhost:9000',
+    //     secure: false
+    //   },
+    //   '/primus': {
+    //     target: 'http://localhost:9000',
+    //     secure: false,
+    //     ws: true
+    //   }
+    // }
   }
 
   config.node = {

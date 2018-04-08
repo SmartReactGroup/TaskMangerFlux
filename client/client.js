@@ -1,9 +1,8 @@
-/* global document, window */
-
 import ReactDOM from 'react-dom'
 import debug from 'debug'
 import { createElementWithContext } from 'fluxible-addons-react'
 import app from './app'
+import './app.scss'
 
 const debugClient = debug('taskmangerflux')
 const dehydratedState = window.App // Sent from the server
@@ -25,5 +24,5 @@ app.rehydrate(dehydratedState, (err, context) => {
   const mountNode = document.getElementById('app')
 
   debugClient('React Rendering')
-  ReactDOM.render(createElementWithContext(context), mountNode, () => debugClient('React Rendered'))
+  ReactDOM.hydrate(createElementWithContext(context), mountNode, () => debugClient('React Rendered'))
 })
