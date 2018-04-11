@@ -20,6 +20,7 @@ import serverConfig from '../configs/server'
 import assets from '../configs/assets'
 import app from '../client/app'
 import HtmlComponent from '../client/components/Html'
+import APIS from './api'
 
 // const env = process.env.NODE_ENV
 const debug = debugLib('task-manager')
@@ -29,6 +30,10 @@ const server = express()
 server.use('/public', express['static'](path.join(__dirname, '/dist')))
 server.use(compression())
 server.use(bodyParser.json())
+
+// apis
+server.use(APIS.user.url, APIS.user.controller)
+
 server.use((req, res, next) => {
   const context = app.createContext()
 

@@ -115,18 +115,6 @@ module.exports = function makeWebpackConfig(mode) {
           {
             loader: 'babel-loader',
             options: {
-              presets: [
-                [
-                  'babel-preset-env',
-                  {
-                    // debug: true,
-                    targets: {
-                      browsers: ['last 2 versions', 'not ie < 11']
-                    },
-                    modules: false
-                  }
-                ]
-              ],
               // This is a feature of `babel-loader` for Webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.

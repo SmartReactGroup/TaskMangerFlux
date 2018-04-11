@@ -1,4 +1,4 @@
-import { Home, About } from '../client/components'
+import { Home, About, Login } from '../client/components'
 
 export default {
   home: {
@@ -14,5 +14,12 @@ export default {
     page: 'about',
     title: 'About',
     handler: About
+  },
+  login: {
+    path: '/login',
+    method: 'get',
+    page: 'login',
+    title: 'Login',
+    handler: Login
   }
 }

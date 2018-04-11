@@ -5,10 +5,17 @@ import { handleHistory } from 'fluxible-router'
 import { Nav } from '../components'
 import pages from '../../configs/routes'
 import ApplicationStore from '../stores/ApplicationStore'
+import UserStore from '../stores/UserStore'
+// import AccountActions from '../actions/AccountActions'
 
 class Application extends React.Component {
 
-  componentDidUpdate(prevProps, prevState) {
+  // componentDidMount() {
+  //   this.context.executeAction(AccountActions.login, 'hello')
+  // }
+
+  componentDidUpdate(prevProps, nextProps) {
+    console.log(prevProps, nextProps)
     const newProps = this.props
     if (newProps.pageTitle === prevProps.pageTitle) {
       return
@@ -20,7 +27,7 @@ class Application extends React.Component {
     const Handler = this.props.currentRoute.handler
     return (
       <div>
-        <Nav currentRoute={this.props.currentRoute} links={pages} />
+        <Nav currentRoute={this.props.currentRoute} links={pages} username={this.props.loggedUser} />
         <Handler />
       </div>
     )
@@ -31,12 +38,19 @@ Application.contextTypes = {
   executeAction: PropTypes.func
 }
 
+Application.propTypes = {
+  loggedUser: PropTypes.string,
+  currentRoute: PropTypes.object
+}
+
 export default provideContext(
   handleHistory(
-    connectToStores(Application, [ApplicationStore], function (context, props) {
+    connectToStores(Application, [ApplicationStore, UserStore], function (context, props) {
       const appStore = context.getStore(ApplicationStore)
+      const userStore = context.getStore(UserStore)
       return {
-        pageTitle: appStore.getPageTitle()
+        pageTitle: appStore.getPageTitle(),
+        loggedUser: userStore.getUser()
       }
     })
   )
