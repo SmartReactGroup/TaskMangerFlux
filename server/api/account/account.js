@@ -4,26 +4,36 @@ import serverConfigs from '../../../configs/server'
 const { host, port } = serverConfigs.api_server
 const ACCOUNT_API_ADDRESS = `http://${host}:${port}`
 
-export default {
-  login: (req, res) => {
-    axios.post(`${ACCOUNT_API_ADDRESS}/auth/local`, req.body)
-      .then(async (result) => {
-        try {
-          const user = await this.getCurrentUser(result.data)
-          res.status(200).json(user)
-        } catch (error) {
-          res.status(401).json(error)
-        }
-      })
-  },
+/**
+ *
+ *
+ * @export
+ * @param {any} req
+ * @param {any} res
+ */
+export async function login(req, res) {
+  try {
+    const response = await axios.post(`${ACCOUNT_API_ADDRESS}/auth/local`, req.body)
+    res.status(200).json(response.data)
+  } catch (error) {
+    console.log(typeof error)
+    res.status(500).json(error)
+  }
+}
 
-  getCurrentUser: (token) => new Promise((resolve, reject) => {
-    axios.get(`${ACCOUNT_API_ADDRESS}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => {
-        resolve(response.data)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
+/**
+ *
+ *
+ * @export
+ * @param {any} req
+ * @param {any} res
+ */
+export async function getCurrentUser(req, res) {
+  try {
+    const options = { headers: { Authorization: `Bearer ${req.body.token}` } }
+    const response = await axios.get(`${ACCOUNT_API_ADDRESS}/api/users/me`, options)
+    res.status(200).json(response.data)
+  } catch (error) {
+    res.status(500).json(error)
+  }
 }

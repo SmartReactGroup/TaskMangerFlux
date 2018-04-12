@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export default {
-  post: (url, payload) =>
-    new Promise((resolve, reject) => {
+  post: (url, payload) => {
+    return new Promise((resolve, reject) => {
       axios
         .post(url, payload)
         .then((response) => {
@@ -12,4 +12,9 @@ export default {
           reject(error)
         })
     })
+  },
+
+  get: () => {
+
+  }
 }

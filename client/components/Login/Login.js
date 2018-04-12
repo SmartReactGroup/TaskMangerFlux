@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import AccountAction from '../../actions/AccountActions'
 
 class Login extends React.Component {
-  static fetchData = (context, route, done) => {
-    console.log('========= fetchData ===========')
-    context.executeAction(AccountAction.login, {
-      email: 'test@example.com',
-      password: 'test'
-    }, done)
-  }
+  // static fetchData = (context, route, done) => {
+  //   console.log('========= fetchData ===========')
+  //   context.executeAction(AccountAction.login, {
+  //     email: 'test@example.com',
+  //     password: 'test'
+  //   }, done)
+  // }
 
   constructor(props) {
     super(props)
@@ -58,12 +58,12 @@ Login.contextTypes = {
   executeAction: PropTypes.func
 }
 
-Login.fetchData = function (context, route, done) {
-  console.log('========= fetchData ===========')
-  context.executeAction(AccountAction.login, {
-    email: 'test@example.com',
-    password: 'test'
-  }, done)
-}
+// Login.fetchData = function (context, route, done) {
+//   console.log('========= fetchData ===========')
+//   context.executeAction(AccountAction.login, {
+//     email: 'test@example.com',
+//     password: 'test'
+//   }, done)
+// }
 
 export default Login
