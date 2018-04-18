@@ -87,7 +87,7 @@ gulp.task('dev', (cb) => {
     'clean',
     'assets',
     'env:dev',
-    ['webpack-dev-server', 'express:prod', 'open'],
+    ['webpack-dev-server'],
     cb
   )
 })

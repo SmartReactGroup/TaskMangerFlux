@@ -3,24 +3,26 @@ import BaseStore from 'fluxible/addons/BaseStore'
 class UserStore extends BaseStore {
   constructor(dispatcher) {
     super(dispatcher)
-    this.username = ''
+    this.user = ''
   }
+
   handleUserLogIn(user) {
-    console.log(this.username)
-    console.log(user)
-    this.username = user
+    this.user = user
     this.emitChange()
   }
+
   getUser() {
-    return this.username
+    return this.user
   }
+
   dehydrate() {
     return {
-      username: this.username
+      user: this.user
     }
   }
+
   rehydrate(state) {
-    this.username = state.username
+    this.user = state.user
   }
 }
 
@@ -28,4 +30,5 @@ UserStore.storeName = 'UserStore'
 UserStore.handlers = {
   USER_LOGGED_IN: 'handleUserLogIn'
 }
+
 export default UserStore

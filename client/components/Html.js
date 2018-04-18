@@ -1,34 +1,42 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ApplicationStore from '../stores/ApplicationStore'
 
-export default function Html(props) {
-  const { style, main, common, essentials } = props.assets
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <title>{props.context.getStore(ApplicationStore).getPageTitle()}</title>
-        <meta name="viewport" content="width=device-width, user-scalable=no" />
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css" />
-        <link href={style} rel="stylesheet" />
-      </head>
-      <body>
-        <div id="app" dangerouslySetInnerHTML={{ __html: props.markup }} />
-        <script dangerouslySetInnerHTML={{ __html: props.state }} />
+export default class Html extends React.Component {
+  static displayName = 'Html'
 
-        <script src={common} />
-        <script src={main} />
-        {essentials && <script src={essentials} />}
-      </body>
-    </html>
-  )
+  static propTypes = {
+    assets: PropTypes.object,
+    exposed: PropTypes.string,
+    markup: PropTypes.string
+  }
+
+  render() {
+    const { assets, markup, exposed } = this.props
+    const { style, main, common, essentials } = assets
+    const markupHtml = { __html: markup }
+    const exposedHtml = { __html: exposed }
+
+    return (
+      <html lang="en" className="no-js">
+        <head>
+          <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <title>Task Manager</title>
+          <meta name="author" content="Kenny" />
+          <meta
+            name="viewport"
+            content="width=device-width,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"
+          />
+          <link href={style} rel="stylesheet" />
+        </head>
+        <body>
+          <div id="main" dangerouslySetInnerHTML={markupHtml} />
+          <script dangerouslySetInnerHTML={exposedHtml} />
+          <script src={common} />
+          <script src={main} />
+          {essentials && <script src={essentials} />}
+        </body>
+      </html>
+    )
+  }
 }
-
-Html.propTypes = {
-  assets: PropTypes.object,
-  context: PropTypes.object,
-  markup: PropTypes.string,
-  state: PropTypes.string
-}
-

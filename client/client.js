@@ -1,28 +1,50 @@
+import React from 'react'
+import { Router } from 'react-router'
+
 import ReactDOM from 'react-dom'
 import debug from 'debug'
-import { createElementWithContext } from 'fluxible-addons-react'
+import concurrent from 'contra/concurrent'
+import CustomFluxibleComponent from './components/CustomFluxibleComponent'
+
 import app from './app'
 import './components/app.scss'
+import { createRoutes, extractRoutesMetadata } from '../server/routes'
+import { browserHistory } from './utils/historyUtils'
 
 const debugClient = debug('taskmangerflux')
-const dehydratedState = window.App // Sent from the server
+const dehydratedState = window.__DATA__
 
-window.React = ReactDOM // For chrome dev tool support
-
-// expose debug object to browser, so that it can be enabled/disabled from browser:
 // https://github.com/visionmedia/debug#browser-support
 window.fluxibleDebug = debug
+window.React = ReactDOM // For chrome dev tool support
 
 debugClient('rehydrating app')
 
-// pass in the dehydrated server state from server.js
+app.getPlugin('ReactRouterPlugin').setHistory(browserHistory)
+
 app.rehydrate(dehydratedState, (err, context) => {
   if (err) {
     throw err
   }
   window.context = context
-  const mountNode = document.getElementById('app')
+  const routes = createRoutes(context)
+  const _context = context.getComponentContext()
 
-  debugClient('React Rendering')
-  ReactDOM.hydrate(createElementWithContext(context), mountNode, () => debugClient('React Rendered'))
+  ReactDOM.hydrate(
+    <CustomFluxibleComponent context={_context}>
+      <Router history={browserHistory}>{routes}</Router>
+    </CustomFluxibleComponent>,
+    document.getElementById('main')
+  )
+
+  browserHistory.listen((location) => {
+    // console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`)
+    // console.log(`The last navigation action was ${action}`)
+    const { promises: fetchDataPromises } = extractRoutesMetadata(context, location.pathname)
+    concurrent(fetchDataPromises, (fetchErr) => {
+      if (fetchErr) {
+        console.error(`fetchData on route change err: ${fetchErr}`)
+      }
+    })
+  })
 })

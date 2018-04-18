@@ -1,17 +1,15 @@
 import Fluxible from 'fluxible'
-import Application from './components/Application'
-import ApplicationStore from './stores/ApplicationStore'
-import RouteStore from './stores/RouteStore'
-import UserStore from './stores/UserStore'
+import App from './components/App'
+import { UserStore } from './stores'
+import { reactRouterPlugin } from './plugins'
 
 // create new fluxible instance
 const app = new Fluxible({
-  component: Application
+  component: App
 })
 
-// register stores
-app.registerStore(RouteStore)
-app.registerStore(ApplicationStore)
+app.plug(reactRouterPlugin())
+
 app.registerStore(UserStore)
 
 export default app
