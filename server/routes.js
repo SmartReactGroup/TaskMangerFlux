@@ -111,9 +111,7 @@ const StaticRouteWithSubRoutes = (route) => {
 const createRoutes = (context) => (
   <App context={context}>
     <Switch>
-      {routesConfig.map((subRoute, k) => (
-        <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />
-      ))}
+      {routesConfig.map((subRoute, k) => <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />)}
     </Switch>
   </App>
 )

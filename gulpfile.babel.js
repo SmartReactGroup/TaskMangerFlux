@@ -3,6 +3,7 @@ import del from 'del'
 import gulp from 'gulp'
 import fs from 'fs'
 import open from 'open'
+import http from 'http'
 // import gulpLoadPlugins from 'gulp-load-plugins'
 import nodemon from 'gulp-nodemon'
 import webpack from 'webpack'
@@ -10,13 +11,52 @@ import WebpackDevServer from 'webpack-dev-server'
 import gutil from 'gulp-util'
 import runSequence from 'run-sequence'
 import os from 'os'
+import browserSync from 'browser-sync'
 
 import makeWebpackConfig from './webpack.config'
-import devConfigs from './configs/development'
+import { development, server } from './configs'
 import paths from './configs/paths'
 
 // const plugins = gulpLoadPlugins()
-const { host, port } = devConfigs
+const browserSyncServer = browserSync.create()
+const { host, port } = development
+// const devURI = `http://${host}:${port}`
+const serURI = `http://${server.host}:${server.port}`
+
+const browserSyncPort = 9000
+const browserSyncURL = `http://${server.host}:${browserSyncPort}`
+
+function checkAppReady(p, cb) {
+  const options = {
+    host,
+    port: p
+  }
+  http
+    .get(options, () => cb(true))
+    .on('error', () => cb(false));
+}
+
+// Call page until first success
+function whenServerReady(p, cb) {
+  let serverReady = false
+  const appReadyInterval = setInterval(() =>
+    checkAppReady(p, (ready) => {
+      if (!ready || serverReady) {
+        return
+      }
+      clearInterval(appReadyInterval)
+      serverReady = true
+      cb()
+    }), 500)
+}
+
+gulp.task('browser-sync', () => {
+  browserSyncServer.init({
+    proxy: serURI,
+    port: browserSyncPort,
+    open: false
+  })
+})
 
 gulp.task('webpack-dev-server', () => {
   const configs = makeWebpackConfig('dev')
@@ -62,7 +102,12 @@ gulp.task('express:dev', () => {
     ext: 'js',
     ignore: ['dist/', 'node_modules/', 'client/'],
     tasks: []
-  }).on('start', () => {})
+  })
+    .on('start', () => {
+      whenServerReady(browserSyncPort, () => {
+        open(browserSyncURL)
+      })
+    })
 })
 
 gulp.task('express:prod', () => {
@@ -77,12 +122,7 @@ gulp.task('open', () => {
 
 // Gulp development mode
 gulp.task('dev', (cb) => {
-  runSequence('clean',
-    'assets',
-    'env:dev',
-    ['webpack-dev-server', 'express:dev'],
-    cb
-  )
+  runSequence('clean', 'assets', 'env:dev', ['webpack-dev-server', 'express:dev'], 'browser-sync', cb)
 })
 
 gulp.task('assets', (cb) => {

@@ -18,6 +18,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import axios from 'axios'
 import concurrent from 'contra/concurrent'
+import { StaticRouter } from 'react-router'
 
 import CustomFluxibleComponent from '../client/components/CustomFluxibleComponent'
 import assets from '../configs/assets'
@@ -26,8 +27,6 @@ import HtmlComponent from '../client/components/Html'
 import serverConfig from '../configs/server'
 import { user } from './api'
 import { createRoutes, extractRoutesMetadata } from './routes'
-
-const { StaticRouter } = require('react-router')
 
 // const env = process.env.NODE_ENV
 // const debug = debugLib('task-manager')
