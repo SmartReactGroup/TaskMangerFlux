@@ -3,7 +3,8 @@ import del from 'del'
 import gulp from 'gulp'
 import fs from 'fs'
 import open from 'open'
-import gulpLoadPlugins from 'gulp-load-plugins'
+// import gulpLoadPlugins from 'gulp-load-plugins'
+import nodemon from 'gulp-nodemon'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import gutil from 'gulp-util'
@@ -14,7 +15,7 @@ import makeWebpackConfig from './webpack.config'
 import devConfigs from './configs/development'
 import paths from './configs/paths'
 
-const plugins = gulpLoadPlugins()
+// const plugins = gulpLoadPlugins()
 const { host, port } = devConfigs
 
 gulp.task('webpack-dev-server', () => {
@@ -56,19 +57,12 @@ gulp.task('env:dev', (cb) => {
 })
 
 gulp.task('express:dev', () => {
-  // Start server with restart on file change events
-  // plugins
-  //   .nodemon({
-  //     script: paths.dev_server_path,
-  //     ext: 'js',
-  //     ignore: nodemonJgnores,
-  //     tasks: ['babel:express']
-  //   })
-  //   .on('start', () => {
-  //     whenServerReady(browserSyncPort, () => {
-  //       browserSync.reload()
-  //     })
-  //   })
+  nodemon({
+    script: paths.prod_server_path,
+    ext: 'js',
+    ignore: ['dist/', 'node_modules/', 'client/'],
+    tasks: []
+  }).on('start', () => {})
 })
 
 gulp.task('express:prod', () => {
@@ -83,21 +77,27 @@ gulp.task('open', () => {
 
 // Gulp development mode
 gulp.task('dev', (cb) => {
-  runSequence(
-    'clean',
+  runSequence('clean',
     'assets',
     'env:dev',
-    ['webpack-dev-server'],
+    ['webpack-dev-server', 'express:dev'],
     cb
   )
 })
 
 gulp.task('assets', (cb) => {
   const eslintString = `/* eslint-disable */${os.EOL}`
-  fs.writeFile(paths.assets_file_path, `${eslintString}module.exports = ${JSON.stringify({
-    style: paths.assets_style,
-    main: paths.assets_main,
-    common: paths.assets_common
-  }, null, 2)}`, cb)
+  fs.writeFile(
+    paths.assets_file_path,
+    `${eslintString}module.exports = ${JSON.stringify(
+      {
+        style: paths.assets_style,
+        main: paths.assets_main,
+        common: paths.assets_common
+      },
+      null,
+      2
+    )}`,
+    cb
+  )
 })
-

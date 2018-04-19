@@ -1,14 +1,24 @@
 import BaseStore from 'fluxible/addons/BaseStore'
 
 class UserStore extends BaseStore {
+
   constructor(dispatcher) {
     super(dispatcher)
-    this.user = ''
+    this.user = null
   }
 
-  handleUserLogIn(user) {
+  loadSession(user) {
     this.user = user
     this.emitChange()
+  }
+
+  loginSuccess(user) {
+    this.user = user
+    this.emitChange('LOGIN_SUCCESS')
+  }
+
+  setUser(user) {
+    this.user = user
   }
 
   getUser() {
@@ -28,7 +38,8 @@ class UserStore extends BaseStore {
 
 UserStore.storeName = 'UserStore'
 UserStore.handlers = {
-  USER_LOGGED_IN: 'handleUserLogIn'
+  LOGIN_SUCCESS: 'loginSuccess',
+  LOAD_SESSION_SUCCESS: 'loadSession'
 }
 
 export default UserStore

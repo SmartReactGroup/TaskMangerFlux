@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { user } from '../../../server/api'
+import API from '../../api'
 
 /**
  * Login with third party API
@@ -10,8 +10,8 @@ import { user } from '../../../server/api'
  */
 export async function login(req, res) {
   try {
-    const response = await axios.post(user.apis.LOGIN, req.body)
-    req.session.token = response.data
+    const response = await axios.post(API.user.apis.LOGIN, req.body)
+    req.session.token = response.data.token
     res.status(200).json(response.data)
   } catch (error) {
     res.status(500).json(error)
@@ -27,9 +27,13 @@ export async function login(req, res) {
  */
 export async function getCurrentUser(req, res) {
   try {
-    const options = { headers: { Authorization: `Bearer ${req.session.token}` } }
-    const response = await axios.get(user.apis.GET_CURRENT_USER, options)
-    res.status(200).json(response.data)
+    if (req.session.token) {
+      const options = { headers: { Authorization: `Bearer ${req.session.token}` } }
+      const response = await axios.get(API.user.apis.GET_CURRENT_USER, options)
+      res.status(200).json(response.data)
+    } else {
+      res.status(200).json(null)
+    }
   } catch (error) {
     res.status(500).json(error)
   }

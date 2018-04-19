@@ -12,6 +12,7 @@ import path from 'path'
 import serialize from 'serialize-javascript'
 import session from 'express-session'
 import connectMongo from 'connect-mongo'
+import chalk from 'chalk'
 // import debugLib from 'debug'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
@@ -94,12 +95,13 @@ server.use((req, res) => {
       }
     })
   }
+
   if (req.session && req.session.token) {
     const options = { headers: { Authorization: `Bearer ${req.session.token}` } }
     axios
       .get(user.apis.GET_CURRENT_USER, options)
       .then((response) => {
-        context.getStore('UserStore').user = response.data
+        context.getStore('UserStore').loadSession(response.data)
         serverRender()
       })
       .catch((err) => {
@@ -111,7 +113,10 @@ server.use((req, res) => {
 })
 
 const port = process.env.PORT || serverConfig.port || 3000
-server.listen(port)
-console.log(`App listening on port: ${port}`)
+server.listen(port, () => {
+  const dateNow = new Date()
+  const dateString = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`
+  console.log(`[${chalk.gray(dateString)}] App listening on port: ${chalk.blue(port)}`)
+})
 
 export default server

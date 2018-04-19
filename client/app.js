@@ -9,7 +9,6 @@ const app = new Fluxible({
 })
 
 app.plug(reactRouterPlugin())
-
 app.registerStore(UserStore)
 
 export default app

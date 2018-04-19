@@ -26,22 +26,16 @@ function getInstancePath(pathname) {
 const routesConfig = [
   {
     path: '/',
-    component: App,
-    routes: [
-      {
-        path: '/',
-        exact: true,
-        component: Home
-      },
-      {
-        path: '/login',
-        component: Login
-      },
-      {
-        path: '/about',
-        component: About
-      }
-    ]
+    exact: true,
+    component: Home
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/about',
+    component: About
   }
 ]
 
@@ -116,8 +110,8 @@ const StaticRouteWithSubRoutes = (route) => {
 
 const createRoutes = (context) => (
   <App context={context}>
-    <Switch >
-      {routesConfig[0].routes.map((subRoute, k) => (
+    <Switch>
+      {routesConfig.map((subRoute, k) => (
         <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />
       ))}
     </Switch>

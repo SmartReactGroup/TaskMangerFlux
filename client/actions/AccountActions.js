@@ -1,20 +1,32 @@
 import HttpClient from '../utils/httpClient'
 
-const ACCOUNT_URI = '/api/users'
+const ACCOUNT_URI = {
+  LOGIN: '/api/users/login',
+  LOAD_SESSION: '/api/users/me'
+}
 
 export default {
-  login: async (actionContext, payload, done) => {
-    try {
-      const tokenRes = await HttpClient.post(`${ACCOUNT_URI}/login`, payload)
-      const userRes = await HttpClient.post(`${ACCOUNT_URI}/me`, tokenRes.data)
-      actionContext.dispatch('USER_LOGGED_IN', userRes.data.name)
-      done()
-    } catch (error) {
-      console.log(error)
-    }
+  Login: async (actionContext, payload, done) => {
+    HttpClient.post(ACCOUNT_URI.LOGIN, payload).then(() => {
+      HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+        actionContext.dispatch('LOGIN_SUCCESS', res.data)
+        done()
+      })
+    }).catch((err) => {
+      console.error(err)
+      done(0)
+    })
   },
 
-  getCurrentUser: () => {
-
+  LoadSession: (actionContext, payload, done) => {
+    HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+      if (res) {
+        actionContext.dispatch('LOAD_SESSION_SUCCESS', res.data)
+      }
+      done()
+    }).catch((err) => {
+      console.error(err)
+      done()
+    })
   }
 }
