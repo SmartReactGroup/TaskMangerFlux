@@ -31,9 +31,9 @@ import { createRoutes, extractRoutesMetadata } from './routes'
 // const env = process.env.NODE_ENV
 // const debug = debugLib('task-manager')
 const server = express()
+const publicPath = path.join(__dirname, '..', 'client', 'assets')
 
-// eslint-disable-next-line
-server.use('/public', express['static'](path.join(__dirname, '/dist')))
+server.use(express.static(publicPath))
 server.use(compression())
 server.use(bodyParser.json())
 

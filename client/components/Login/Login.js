@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Input, Button } from 'antd'
+
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
 
@@ -14,27 +16,36 @@ class Login extends React.Component {
     super(props)
     this.context = context
     this._onStoreChange = this._onStoreChange.bind(this)
+    this.userStore = this.context.getStore(UserStore)
     this.state = this.getStoreState()
   }
 
-  getStoreState() {
-    return {
-      email: '',
-      password: '',
-      user: this.context.getStore(UserStore).getUser()
-    }
-  }
+  getStoreState = () => ({
+    email: '',
+    password: '',
+    errorMessage: '',
+    user: this.userStore.getCurrentUser()
+  })
 
   componentDidMount() {
-    this.context.getStore(UserStore).addChangeListener(this._onStoreChange)
+    this.userStore.addChangeListener(this._onStoreChange)
   }
 
   componentWillUnmount() {
-    this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
+    this.userStore.removeChangeListener(this._onStoreChange)
   }
 
-  _onStoreChange() {
-    this.setState(this.getStoreState())
+  _onStoreChange(action) {
+    const result = {}
+    const userStore = this.context.getStore(UserStore)
+    if (action.status === 'LOGIN_FAILED') {
+      result.errorMessage = action.message
+      result.user = userStore.getCurrentUser()
+    }
+
+    if (Object.keys(result).length) {
+      this.setState(result)
+    }
   }
 
   changeHandle(event) {
@@ -52,20 +63,21 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="login-page">
         <h2>Login - {this.state.user && this.state.user.name}</h2>
         <form>
           <label htmlFor="email">
             email:
-            <input id="email" type="text" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
+            <Input id="email" type="text" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
           </label>
           <label htmlFor="password">
             password:
-            <input id="password" type="password" value={this.state.password} onChange={(e) => this.changeHandle(e)} />
+            <Input id="password" type="password" value={this.state.password} onChange={(e) => this.changeHandle(e)} />
           </label>
-          <button type="button" onClick={() => this.handleSubmit()}>
-            Submit
-          </button>
+          <Button type="button" onClick={() => this.handleSubmit()}>
+            Login
+          </Button>
+          <h3>{this.state.errorMessage}</h3>
         </form>
       </div>
     )

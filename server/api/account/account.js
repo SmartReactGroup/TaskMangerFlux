@@ -8,14 +8,17 @@ import API from '../../api'
  * @param {any} req
  * @param {any} res
  */
-export async function login(req, res) {
-  try {
-    const response = await axios.post(API.user.apis.LOGIN, req.body)
-    req.session.token = response.data.token
-    res.status(200).json(response.data)
-  } catch (error) {
-    res.status(500).json(error)
-  }
+export function login(req, res) {
+  axios
+    .post(API.user.apis.LOGIN, req.body)
+    .then((response) => {
+      req.session.token = response.data.token
+      res.status(200).json(response.data)
+    })
+    .catch((err) => {
+      const { status, data } = err.response
+      res.status(status).json(data.message)
+    })
 }
 
 /**

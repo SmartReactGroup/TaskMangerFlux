@@ -27,6 +27,7 @@ export default class Html extends React.Component {
             name="viewport"
             content="width=device-width,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"
           />
+          <link href="/antd/antd.css" rel="stylesheet" />
           <link href={style} rel="stylesheet" />
         </head>
         <body>

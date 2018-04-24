@@ -17,11 +17,19 @@ class UserStore extends BaseStore {
     this.emitChange('LOGIN_SUCCESS')
   }
 
+  loginFailed(msg) {
+    this.user = null
+    this.emitChange({
+      status: 'LOGIN_FAILED',
+      message: msg
+    })
+  }
+
   setUser(user) {
     this.user = user
   }
 
-  getUser() {
+  getCurrentUser() {
     return this.user
   }
 
@@ -39,7 +47,8 @@ class UserStore extends BaseStore {
 UserStore.storeName = 'UserStore'
 UserStore.handlers = {
   LOGIN_SUCCESS: 'loginSuccess',
-  LOAD_SESSION_SUCCESS: 'loadSession'
+  LOAD_SESSION_SUCCESS: 'loadSession',
+  LOGIN_FAILED: 'loginFailed'
 }
 
 export default UserStore
