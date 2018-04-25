@@ -34,6 +34,7 @@ const server = express()
 
 // eslint-disable-next-line
 server.use('/public', express['static'](path.join(__dirname, '/dist')))
+server.use(express.static(path.join(__dirname, '..', 'client', 'components', 'assets')))
 server.use(compression())
 server.use(bodyParser.json())
 

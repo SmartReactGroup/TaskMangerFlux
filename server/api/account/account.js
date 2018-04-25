@@ -14,7 +14,11 @@ export async function login(req, res) {
     req.session.token = response.data.token
     res.status(200).json(response.data)
   } catch (error) {
-    res.status(500).json(error)
+    const anthError = {
+      status: error.response.status,
+      errMsg: error.response.data
+    }
+    res.status(anthError.status).send(anthError.errMsg)
   }
 }
 

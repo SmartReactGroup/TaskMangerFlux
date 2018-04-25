@@ -25,6 +25,7 @@ const serURI = `http://${server.host}:${server.port}`
 
 const browserSyncPort = 9000
 const browserSyncURL = `http://${server.host}:${browserSyncPort}`
+let firstStart = true
 
 function checkAppReady(p, cb) {
   const options = {
@@ -105,7 +106,11 @@ gulp.task('express:dev', () => {
   })
     .on('start', () => {
       whenServerReady(browserSyncPort, () => {
-        open(browserSyncURL)
+        if (firstStart) {
+          open(browserSyncURL)
+        } else {
+          browserSync.reload()
+        }
       })
     })
 })

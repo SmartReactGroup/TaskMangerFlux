@@ -13,8 +13,9 @@ export default {
         done()
       })
     }).catch((err) => {
-      console.error(err)
-      done(0)
+      const errResponse = err.response
+      actionContext.dispatch('LOGIN_FAILED', errResponse)
+      done()
     })
   },
 
