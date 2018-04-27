@@ -1,5 +1,6 @@
 import { Form, Checkbox, Input, Button, Alert } from 'antd'
 import React from 'react'
+import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
@@ -13,10 +14,15 @@ class Login extends React.Component {
     getStore: PropTypes.func
   }
 
+  static propTypes = {
+    location: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props)
     this.context = context
     this._onStoreChange = this._onStoreChange.bind(this)
+    this.userStore = this.context.getStore(UserStore)
     this.state = this.getStoreState()
   }
 
@@ -25,8 +31,10 @@ class Login extends React.Component {
       email: '',
       password: '',
       user: this.context.getStore(UserStore).getUser(),
-      loginMsg: '',
-      showMessage: 'false'
+      responseMsg: '',
+      showMsg: false,
+      warningBarType: '',
+      redirectToReferrer: false
     }
   }
 
@@ -38,12 +46,24 @@ class Login extends React.Component {
     this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
   }
 
-  _onStoreChange(data) {
-    if (data.data && data.data.message) {
-      this.setState({ user: null, loginMsg: data.data.message, showMessage: 'true' })
+  _onStoreChange(actions) {
+    const result = {}
+    const authEvents = ['LOGIN_FAILED', 'LOGIN_SUCCESS']
+    if (authEvents.includes(actions.event)) {
+      result.user = this.userStore.getUser()
+      result.responseMsg = actions.msg
+      result.showMsg = true
+      if (actions.event === 'LOGIN_FAILED') {
+        result.warningBarType = 'error'
+      }
+      else {
+        result.warningBarType = 'success'
+        result.redirectToReferrer = true
+      }
     }
-    else {
-      this.setState({ user: this.context.getStore(UserStore).getUser(), showMessage: 'true' })
+
+    if (Object.keys(result).length) {
+      this.setState(result)
     }
   }
 
@@ -60,7 +80,16 @@ class Login extends React.Component {
     this.context.executeAction(AccountActions.Login, this.state)
   }
 
+  onClose() {
+    this.setState({ showMsg: false })
+  }
+
   render() {
+    const { from } = this.props.location.state || { from: { pathname: '/' } }
+    const { redirectToReferrer } = this.state
+    if (redirectToReferrer) {
+      return <Redirect to={from} />
+    }
     return (
       <div className="login-page">
         <h2>Login - {this.state.user && this.state.user.name}</h2>
@@ -73,12 +102,14 @@ class Login extends React.Component {
           </FormItem>
           <FormItem>
             <Checkbox>Remember me</Checkbox>
-            <a className="login-form-forgot" href=""> Forgot password </a>
+            <a className="login-form-forgot" href=""> Forgot password</a><span> or </span><Link to="/register">register now</Link>
+          </FormItem>
+          <FormItem>
             <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => this.handleSubmit()} >
               Log in
             </Button>
           </FormItem>
-          <WarningBanner showMsg={this.state.showMessage} user={this.state.user} loginMsg={this.state.loginMsg} />
+          {this.state.showMsg && <WarningBanner msg={this.state.responseMsg} onClose={() => this.onClose()} type={this.state.warningBarType} />}
         </Form>
       </div>
     )
@@ -86,23 +117,21 @@ class Login extends React.Component {
 }
 
 function WarningBanner(props) {
-  if (props.showMsg === 'false') {
-    return null
-  }
-
+  const { msg, onClose, type } = props
   return (
     <div className="messageAlert">
-      {
-        props.user ? <Alert message="Login Successfully" type="success" closable /> : <Alert message={props.loginMsg} type="error" closable />
-      }
+      <Alert message={msg} type={type} closable onClose={onClose} />
     </div>
   )
 }
 
 WarningBanner.propTypes = {
-  showMsg: PropTypes.string,
-  user: PropTypes.object,
-  loginMsg: PropTypes.string
+  // showMsg: PropTypes.bool,
+  // user: PropTypes.object,
+  msg: PropTypes.string,
+  onClose: PropTypes.func,
+  type: PropTypes.string
+  // onClose: PropTypes.func
 }
 
 export default Login

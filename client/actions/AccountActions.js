@@ -13,7 +13,7 @@ export default {
         done()
       })
     }).catch((err) => {
-      const errResponse = err.response
+      const errResponse = err.response.data
       actionContext.dispatch('LOGIN_FAILED', errResponse)
       done()
     })

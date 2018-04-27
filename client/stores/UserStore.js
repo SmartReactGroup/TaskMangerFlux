@@ -15,13 +15,18 @@ class UserStore extends BaseStore {
 
   loginSuccess(user) {
     this.user = user
-    this.emitChange('LOGIN_SUCCESS')
+    this.emitChange({
+      event: 'LOGIN_SUCCESS',
+      msg: 'Login successfully'
+    })
   }
 
   loginFailed(msg) {
     this.user = null
-    console.log(msg)
-    this.emitChange(msg)
+    this.emitChange({
+      event: 'LOGIN_FAILED',
+      msg
+    })
   }
 
   setUser(user) {

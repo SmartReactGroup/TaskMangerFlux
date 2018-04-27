@@ -3,7 +3,7 @@ import React from 'react'
 import { Switch } from 'react-router'
 import { Route, matchPath, Redirect } from 'react-router-dom'
 
-import { Home, About, Login } from '../client/components'
+import { Home, About, Login, Register } from '../client/components'
 import { pathPrefix } from '../configs'
 import App from '../client/components/App'
 
@@ -23,21 +23,29 @@ function getInstancePath(pathname) {
   return instancePath
 }
 
-const routesConfig = [
-  {
-    path: '/',
-    exact: true,
-    component: Home
-  },
-  {
-    path: '/login',
-    component: Login
-  },
-  {
-    path: '/about',
-    component: About
-  }
-]
+const routesConfig = [{
+  path: '/',
+  component: App,
+  routes: [
+    {
+      path: '/',
+      exact: true,
+      component: Home
+    },
+    {
+      path: '/login',
+      component: Login
+    },
+    {
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/register',
+      component: Register
+    }
+  ]
+}]
 
 // update routes config with instance name
 const updateRoutesConfig = (routeConfig) => {
@@ -111,7 +119,7 @@ const StaticRouteWithSubRoutes = (route) => {
 const createRoutes = (context) => (
   <App context={context}>
     <Switch>
-      {routesConfig.map((subRoute, k) => <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />)}
+      {routesConfig[0].routes.map((subRoute, k) => <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />)}
     </Switch>
   </App>
 )
