@@ -1,29 +1,54 @@
 import React from 'react'
-import { Menu } from 'antd'
-import { Link } from 'react-router-dom'
+import { Menu, Icon } from 'antd'
+import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 class Nav extends React.Component {
+
   static propTypes = {
-    history: PropTypes.string
+    currentLocation: PropTypes.object,
+    user: PropTypes.object
   }
+
   constructor(props) {
     super(props)
     this.state = {
-      currentLocation: props.history
+      navItems: [
+        { path: '/', name: 'Home' },
+        { path: '/about', name: 'About' },
+        { path: '/login', name: 'Login' }
+      ]
     }
   }
 
   render() {
+    const { navItems } = this.state
+    const { pathname } = this.props.currentLocation
+    if (this.props.user && this.props.user.name) {
+      const userMenu = { path: '/me', name: this.props.user.name }
+      navItems.splice(navItems.length - 1, 1, userMenu)
+    }
     return (
       <Menu
         theme="dark"
         mode="horizontal"
+        selectedKeys={[pathname]}
         style={{ lineHeight: '64px' }}
       >
-        <Menu.Item key=""><Link to="/">Home</Link></Menu.Item>
-        <Menu.Item key="about"><Link to="/about">About</Link></Menu.Item>
-        <Menu.Item key="login"><Link to="/login">Login</Link></Menu.Item>
+        {navItems.map((navItem) => {
+          if (navItem.path === '/me') {
+            return (
+              <Menu.SubMenu title={<span>{`welcome, ${navItem.name} `}<Icon type="down" /></span>} key={navItem.path} >
+                <Menu.ItemGroup>
+                  <Menu.Item key="/myprofile"><NavLink to={`${navItem.path}/myprofile`}>My Profile</NavLink></Menu.Item>
+                  <Menu.Item key="/settings"><NavLink to={`${navItem.path}/settings`}>Settings</NavLink></Menu.Item>
+                  <Menu.Item key="/logout">Log out</Menu.Item>
+                </Menu.ItemGroup>
+              </Menu.SubMenu>
+            )
+          }
+          return <Menu.Item key={navItem.path}><NavLink to={navItem.path}>{navItem.name}</NavLink></Menu.Item>
+        })}
       </Menu>
     )
   }

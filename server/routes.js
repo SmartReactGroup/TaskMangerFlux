@@ -3,7 +3,7 @@ import React from 'react'
 import { Switch } from 'react-router'
 import { Route, matchPath, Redirect } from 'react-router-dom'
 
-import { Home, About, Login, Register } from '../client/components'
+import { Home, About, Login, Register, MyProfile, Settings } from '../client/components'
 import { pathPrefix } from '../configs'
 import App from '../client/components/App'
 
@@ -43,6 +43,20 @@ const routesConfig = [{
     {
       path: '/register',
       component: Register
+    },
+    {
+      path: '/me',
+      component: MyProfile,
+      routes: [
+        {
+          path: '/me/myprofile',
+          component: MyProfile
+        },
+        {
+          path: '/me/settings',
+          component: Settings
+        }
+      ]
     }
   ]
 }]
@@ -119,7 +133,13 @@ const StaticRouteWithSubRoutes = (route) => {
 const createRoutes = (context) => (
   <App context={context}>
     <Switch>
-      {routesConfig[0].routes.map((subRoute, k) => <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />)}
+      {routesConfig[0].routes.map((subRoute, k) => {
+        if (subRoute.routes) {
+          return subRoute.routes.map((route, i) => <StaticRouteWithSubRoutes key={i} {...route} fluxibleContext={context} />)
+        }
+        return <StaticRouteWithSubRoutes key={k} {...subRoute} fluxibleContext={context} />
+      }
+      )}
     </Switch>
   </App>
 )

@@ -44,3 +44,24 @@ export async function getCurrentUser(req, res) {
     res.status(500).json(error)
   }
 }
+
+/**
+ * Create new user
+ *
+ * @export
+ * @param {any} req
+ * @param {any} res
+ */
+
+export async function Register(req, res) {
+  try {
+    console.log('=========', req.body)
+    const response = await axios.post(API.user.apis.REGISTER, req.body)
+    req.session.token = response.data.token
+    res.status(200).json(response.data)
+    console.log(response)
+  } catch (error) {
+    const { status, data } = error.response
+    res.status(status).send(data)
+  }
+}

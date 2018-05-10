@@ -10,7 +10,8 @@ export default {
     controller: account,
     apis: {
       LOGIN: `${ACCOUNT_API_ADDRESS}/auth/local`,
-      GET_CURRENT_USER: `${ACCOUNT_API_ADDRESS}/api/users/me`
+      GET_CURRENT_USER: `${ACCOUNT_API_ADDRESS}/api/users/me`,
+      REGISTER: `${ACCOUNT_API_ADDRESS}/api/users`
     }
   }
 }

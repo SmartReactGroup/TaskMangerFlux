@@ -1,9 +1,10 @@
-import { Form, Checkbox, Input, Button, Alert } from 'antd'
+import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
+import { WarningBanner } from '../../components'
 
 const FormItem = Form.Item
 
@@ -87,12 +88,14 @@ class Login extends React.Component {
   render() {
     const { from } = this.props.location.state || { from: { pathname: '/' } }
     const { redirectToReferrer } = this.state
+    // if (this.state.user) {
+    //   this.props.history.push({ name: this.state.user.name })
+    // }
     if (redirectToReferrer) {
       return <Redirect to={from} />
     }
     return (
       <div className="login-page">
-        <h2>Login - {this.state.user && this.state.user.name}</h2>
         <Form>
           <FormItem>
             <Input id="email" type="text" placeholder="Email" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
@@ -114,24 +117,6 @@ class Login extends React.Component {
       </div>
     )
   }
-}
-
-function WarningBanner(props) {
-  const { msg, onClose, type } = props
-  return (
-    <div className="messageAlert">
-      <Alert message={msg} type={type} closable onClose={onClose} />
-    </div>
-  )
-}
-
-WarningBanner.propTypes = {
-  // showMsg: PropTypes.bool,
-  // user: PropTypes.object,
-  msg: PropTypes.string,
-  onClose: PropTypes.func,
-  type: PropTypes.string
-  // onClose: PropTypes.func
 }
 
 export default Login

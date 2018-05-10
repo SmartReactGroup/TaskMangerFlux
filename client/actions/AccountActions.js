@@ -2,7 +2,8 @@ import HttpClient from '../utils/httpClient'
 
 const ACCOUNT_URI = {
   LOGIN: '/api/users/login',
-  LOAD_SESSION: '/api/users/me'
+  LOAD_SESSION: '/api/users/me',
+  REGISTER: '/api/users/register'
 }
 
 export default {
@@ -27,6 +28,31 @@ export default {
       done()
     }).catch((err) => {
       console.error(err)
+      done()
+    })
+  },
+
+  Register: (actionContext, payload, done) => {
+    HttpClient.post(ACCOUNT_URI.REGISTER, payload).then(() => {
+      HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+        actionContext.dispatch('REGISTER_SUCCESS', res.data)
+        done()
+      })
+    }).catch((err) => {
+      const errResponse = err.response.data
+      actionContext.dispatch('REGISTER_FAILED', errResponse)
+      done()
+    })
+  },
+
+  UploadAvator: (actionContext, payload, done) => {
+    HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+      if (res) {
+        console.log(res)
+      }
+      done()
+    }).catch((err) => {
+      console.log(err)
       done()
     })
   }

@@ -29,6 +29,22 @@ class UserStore extends BaseStore {
     })
   }
 
+  registerSuccess(user) {
+    this.user = user
+    this.emitChange({
+      event: 'REGISTER_SUCCESS',
+      msg: 'Register successfully'
+    })
+  }
+
+  registerFailed(msg) {
+    this.user = null
+    this.emitChange({
+      event: 'REGISTER_FAILED',
+      msg: msg.message
+    })
+  }
+
   setUser(user) {
     this.user = user
   }
@@ -52,7 +68,9 @@ UserStore.storeName = 'UserStore'
 UserStore.handlers = {
   LOGIN_SUCCESS: 'loginSuccess',
   LOAD_SESSION_SUCCESS: 'loadSession',
-  LOGIN_FAILED: 'loginFailed'
+  LOGIN_FAILED: 'loginFailed',
+  REGISTER_SUCCESS: 'registerSuccess',
+  REGISTER_FAILED: 'registerFailed'
 }
 
 export default UserStore
