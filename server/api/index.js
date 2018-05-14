@@ -11,7 +11,8 @@ export default {
     apis: {
       LOGIN: `${ACCOUNT_API_ADDRESS}/auth/local`,
       GET_CURRENT_USER: `${ACCOUNT_API_ADDRESS}/api/users/me`,
-      REGISTER: `${ACCOUNT_API_ADDRESS}/api/users`
+      REGISTER: `${ACCOUNT_API_ADDRESS}/api/users`,
+      CHANGE_PASSWORD: `${ACCOUNT_API_ADDRESS}/api/users`
     }
   }
 }

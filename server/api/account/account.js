@@ -55,11 +55,26 @@ export async function getCurrentUser(req, res) {
 
 export async function Register(req, res) {
   try {
-    console.log('=========', req.body)
     const response = await axios.post(API.user.apis.REGISTER, req.body)
     req.session.token = response.data.token
     res.status(200).json(response.data)
-    console.log(response)
+  } catch (error) {
+    const { status, data } = error.response
+    res.status(status).send(data)
+  }
+}
+
+export async function ChangePassword(req, res) {
+  console.log('+++++++++++', req.body)
+  try {
+    const options = {
+      headers: { Authorization: `Bearer ${req.session.token}` },
+      query: { access_token: req.session.token },
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword
+    }
+    const response = await axios.put(`${API.user.apis.CHANGE_PASSWORD}/${req.params.id}/password`, options)
+    console.log('111111111', response)
   } catch (error) {
     const { status, data } = error.response
     res.status(status).send(data)

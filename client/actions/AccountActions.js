@@ -1,9 +1,11 @@
 import HttpClient from '../utils/httpClient'
 
 const ACCOUNT_URI = {
+  USERS: '/api/users',
   LOGIN: '/api/users/login',
   LOAD_SESSION: '/api/users/me',
-  REGISTER: '/api/users/register'
+  REGISTER: '/api/users/register',
+  CHANGE_PASSWORD: '/api/users/changePassword'
 }
 
 export default {
@@ -53,6 +55,13 @@ export default {
       done()
     }).catch((err) => {
       console.log(err)
+      done()
+    })
+  },
+
+  ChangePassword: (actionContext, payload, done) => {
+    console.log(payload)
+    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/password`, payload).then(() => {
       done()
     })
   }
