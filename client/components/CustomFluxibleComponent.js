@@ -1,21 +1,22 @@
 /* eslint-disable */
-const React = require('react')
-const PropTypes = require('prop-types')
-const createReactClass = require('create-react-class')
+import React from 'react'
+import PropTypes from 'prop-types'
+import createReactClass from 'create-react-class'
 
-const CustomFluxibleComponent = createReactClass({
-  displayName: 'CustomFluxibleComponent',
+export default class CustomFluxibleComponent extends React.Component {
 
-  propTypes: {
+  static displayName = 'CustomFluxibleComponent'
+
+  static propTypes = {
     context: PropTypes.object.isRequired
-  },
+  }
 
-  childContextTypes: {
+  static childContextTypes = {
     executeAction: PropTypes.func.isRequired,
     getStore: PropTypes.func.isRequired,
     config: PropTypes.object,
     devices: PropTypes.object
-  },
+  }
 
   /**
    * Provides the current context as a child context
@@ -28,13 +29,11 @@ const CustomFluxibleComponent = createReactClass({
       config: this.props.context.config,
       devices: this.props.context.devices
     }
-  },
+  }
 
   render() {
     return React.cloneElement(this.props.children, {
       context: this.props.context
     })
   }
-})
-
-export default CustomFluxibleComponent
+}

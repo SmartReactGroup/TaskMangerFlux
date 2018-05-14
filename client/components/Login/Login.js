@@ -2,6 +2,8 @@ import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Input, Button } from 'antd'
+
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
@@ -40,11 +42,11 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    this.context.getStore(UserStore).addChangeListener(this._onStoreChange)
+    this.userStore.addChangeListener(this._onStoreChange)
   }
 
   componentWillUnmount() {
-    this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
+    this.userStore.removeChangeListener(this._onStoreChange)
   }
 
   _onStoreChange(actions) {

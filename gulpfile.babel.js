@@ -22,8 +22,7 @@ const browserSyncServer = browserSync.create()
 const { host, port } = development
 // const devURI = `http://${host}:${port}`
 const serURI = `http://${server.host}:${server.port}`
-
-const browserSyncPort = 9001
+const browserSyncPort = 3001
 const browserSyncURL = `http://${server.host}:${browserSyncPort}`
 let firstStart = true
 
@@ -34,7 +33,7 @@ function checkAppReady(p, cb) {
   }
   http
     .get(options, () => cb(true))
-    .on('error', () => cb(false));
+    .on('error', () => cb(false))
 }
 
 // Call page until first success
@@ -97,6 +96,7 @@ gulp.task('env:dev', (cb) => {
   cb()
 })
 
+let firstStart = true
 gulp.task('express:dev', () => {
   nodemon({
     script: paths.prod_server_path,
@@ -109,7 +109,8 @@ gulp.task('express:dev', () => {
         if (firstStart) {
           firstStart = false
           open(browserSyncURL)
-        } else {
+        }
+        else {
           browserSyncServer.reload()
         }
       })

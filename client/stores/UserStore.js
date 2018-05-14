@@ -45,11 +45,19 @@ class UserStore extends BaseStore {
     })
   }
 
+  loginFailed(msg) {
+    this.user = null
+    this.emitChange({
+      status: 'LOGIN_FAILED',
+      message: msg
+    })
+  }
+
   setUser(user) {
     this.user = user
   }
 
-  getUser() {
+  getCurrentUser() {
     return this.user
   }
 

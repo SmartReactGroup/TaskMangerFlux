@@ -9,18 +9,18 @@ const ACCOUNT_URI = {
 }
 
 export default {
-  Login: async (actionContext, payload, done) => {
+  Login: (actionContext, payload, done) => {
     HttpClient.post(ACCOUNT_URI.LOGIN, payload).then(() => {
       HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
         actionContext.dispatch('LOGIN_SUCCESS', res.data)
         done()
       })
     }).catch((err) => {
-      const errResponse = err.response.data
-      actionContext.dispatch('LOGIN_FAILED', errResponse)
+      actionContext.dispatch('LOGIN_FAILED', err.response.data)
       done()
     })
   },
+
 
   LoadSession: (actionContext, payload, done) => {
     HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
