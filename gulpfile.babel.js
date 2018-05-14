@@ -96,7 +96,6 @@ gulp.task('env:dev', (cb) => {
   cb()
 })
 
-let firstStart = true
 gulp.task('express:dev', () => {
   nodemon({
     script: paths.prod_server_path,

@@ -31,7 +31,7 @@ class MyProfile extends React.Component {
 
   _onStoreChange() {
     const result = {}
-    result.user = this.userStore.getUser()
+    result.user = this.userStore.getCurrentUser()
     this.setState(result)
   }
 

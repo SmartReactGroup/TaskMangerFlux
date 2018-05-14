@@ -24,7 +24,7 @@ class App extends React.Component {
     this._onStoreChange = this._onStoreChange.bind(this)
     this.userStore = this.context.getStore(UserStore)
     this.state = {
-      user: this.context.getStore(UserStore).getUser()
+      user: this.context.getStore(UserStore).getCurrentUser()
     }
   }
   componentDidMount() {
@@ -37,12 +37,11 @@ class App extends React.Component {
 
   _onStoreChange() {
     const result = {}
-    result.user = this.userStore.getUser()
+    result.user = this.userStore.getCurrentUser()
     this.setState(result)
   }
 
   render() {
-    console.log(this.state.user)
     const appInitData = Object.assign({}, { name: 'TaskManger' })
     const childs = React.cloneElement(this.props.children, appInitData)
     return (

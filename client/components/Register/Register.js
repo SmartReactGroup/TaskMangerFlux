@@ -26,7 +26,7 @@ class RegistrationForm extends React.Component {
     this.state = {
       confirmDirty: false,
       msg: '',
-      user: this.userStore.getUser(),
+      user: this.userStore.getCurrentUser(),
       showMsg: false,
       warningBarType: '',
       redirectToReferrer: false
@@ -46,7 +46,7 @@ class RegistrationForm extends React.Component {
     const result = {}
     const authEvent = ['REGISTER_SUCCESS', 'REGISTER_FAILED']
     if (authEvent.includes(actions.event)) {
-      result.user = this.userStore.getUser()
+      result.user = this.userStore.getCurrentUser()
       result.msg = actions.msg
       if (actions.event === 'REGISTER_SUCCESS') {
         result.redirectToReferrer = true

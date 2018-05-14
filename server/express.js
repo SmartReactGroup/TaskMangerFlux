@@ -107,6 +107,8 @@ server.use((req, res) => {
         serverRender()
       })
       .catch((err) => {
+        req.session.token = ''
+        serverRender()
         console.error(err.toString())
       })
   } else {

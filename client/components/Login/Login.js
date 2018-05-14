@@ -2,8 +2,6 @@ import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Input, Button } from 'antd'
-
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
@@ -33,7 +31,7 @@ class Login extends React.Component {
     return {
       email: '',
       password: '',
-      user: this.context.getStore(UserStore).getUser(),
+      user: this.context.getStore(UserStore).getCurrentUser(),
       responseMsg: '',
       showMsg: false,
       warningBarType: '',
@@ -53,7 +51,7 @@ class Login extends React.Component {
     const result = {}
     const authEvents = ['LOGIN_FAILED', 'LOGIN_SUCCESS']
     if (authEvents.includes(actions.event)) {
-      result.user = this.userStore.getUser()
+      result.user = this.userStore.getCurrentUser()
       result.responseMsg = actions.msg
       result.showMsg = true
       if (actions.event === 'LOGIN_FAILED') {
