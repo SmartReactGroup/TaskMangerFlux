@@ -1,0 +1,38 @@
+.avatarBackgroundImg {
+  position: relative;
+}
+
+// .ant-upload.ant-upload-select-picture-card > .ant-upload {
+//   padding: 0px;
+// }
+
+.ant-avatar-image {
+  position: absolute;
+  background-color: white;
+  top: 290px;
+  left: 45%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+}
+
+.personal-avator input {
+  position: absolute;
+  top: 290px;
+  left: 45%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  opacity: 0;
+}
+.ant-card-head {
+  background: none;
+}
+.userInfo {
+  margin-top: 60px;
+  text-align: center;
+}
+.userDescription {
+  max-width: 500px;
+  margin: 0 auto;
+}

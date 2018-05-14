@@ -1,15 +1,24 @@
+import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
+import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Input, Button } from 'antd'
 
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
+import { WarningBanner } from '../../components'
+
+const FormItem = Form.Item
 
 class Login extends React.Component {
 
   static contextTypes = {
     executeAction: PropTypes.func,
     getStore: PropTypes.func
+  }
+
+  static propTypes = {
+    location: PropTypes.object
   }
 
   constructor(props, context) {
@@ -20,12 +29,17 @@ class Login extends React.Component {
     this.state = this.getStoreState()
   }
 
-  getStoreState = () => ({
-    email: '',
-    password: '',
-    errorMessage: '',
-    user: this.userStore.getCurrentUser()
-  })
+  getStoreState() {
+    return {
+      email: '',
+      password: '',
+      user: this.context.getStore(UserStore).getUser(),
+      responseMsg: '',
+      showMsg: false,
+      warningBarType: '',
+      redirectToReferrer: false
+    }
+  }
 
   componentDidMount() {
     this.userStore.addChangeListener(this._onStoreChange)
@@ -35,12 +49,20 @@ class Login extends React.Component {
     this.userStore.removeChangeListener(this._onStoreChange)
   }
 
-  _onStoreChange(action) {
+  _onStoreChange(actions) {
     const result = {}
-    const userStore = this.context.getStore(UserStore)
-    if (action.status === 'LOGIN_FAILED') {
-      result.errorMessage = action.message
-      result.user = userStore.getCurrentUser()
+    const authEvents = ['LOGIN_FAILED', 'LOGIN_SUCCESS']
+    if (authEvents.includes(actions.event)) {
+      result.user = this.userStore.getUser()
+      result.responseMsg = actions.msg
+      result.showMsg = true
+      if (actions.event === 'LOGIN_FAILED') {
+        result.warningBarType = 'error'
+      }
+      else {
+        result.warningBarType = 'success'
+        result.redirectToReferrer = true
+      }
     }
 
     if (Object.keys(result).length) {
@@ -61,24 +83,36 @@ class Login extends React.Component {
     this.context.executeAction(AccountActions.Login, this.state)
   }
 
+  onClose() {
+    this.setState({ showMsg: false })
+  }
+
   render() {
+    const { from } = this.props.location.state || { from: { pathname: '/' } }
+    const { redirectToReferrer } = this.state
+    if (redirectToReferrer) {
+      return <Redirect to={from} />
+    }
     return (
       <div className="login-page">
-        <h2>Login - {this.state.user && this.state.user.name}</h2>
-        <form>
-          <label htmlFor="email">
-            email:
-            <Input id="email" type="text" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
-          </label>
-          <label htmlFor="password">
-            password:
-            <Input id="password" type="password" value={this.state.password} onChange={(e) => this.changeHandle(e)} />
-          </label>
-          <Button type="button" onClick={() => this.handleSubmit()}>
-            Login
-          </Button>
-          <h3>{this.state.errorMessage}</h3>
-        </form>
+        <Form>
+          <FormItem>
+            <Input id="email" type="text" placeholder="Email" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
+          </FormItem>
+          <FormItem>
+            <Input id="password" type="password" placeholder="Password" value={this.state.password} onChange={(e) => this.changeHandle(e)} />
+          </FormItem>
+          <FormItem>
+            <Checkbox>Remember me</Checkbox>
+            <a className="login-form-forgot" href=""> Forgot password</a><span> or </span><Link to="/register">register now</Link>
+          </FormItem>
+          <FormItem>
+            <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => this.handleSubmit()} >
+              Log in
+            </Button>
+          </FormItem>
+          {this.state.showMsg && <WarningBanner msg={this.state.responseMsg} onClose={() => this.onClose()} type={this.state.warningBarType} />}
+        </Form>
       </div>
     )
   }

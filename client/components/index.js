@@ -1,6 +1,11 @@
+export WarningBanner from './WarningBanner/WarningBanner'
 export About from './About/About'
 export Home from './Home/Home'
 export Nav from './Nav/Nav'
 export Login from './Login/Login'
 export List from './List/List'
 export App from './App'
+export Register from './Register/Register'
+export MyProfile from './MyProfile/MyProfile'
+export Settings from './Settings/Settings'
+

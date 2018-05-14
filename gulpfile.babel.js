@@ -22,9 +22,9 @@ const browserSyncServer = browserSync.create()
 const { host, port } = development
 // const devURI = `http://${host}:${port}`
 const serURI = `http://${server.host}:${server.port}`
-
 const browserSyncPort = 3001
 const browserSyncURL = `http://${server.host}:${browserSyncPort}`
+let firstStart = true
 
 function checkAppReady(p, cb) {
   const options = {

@@ -33,7 +33,10 @@ import { createRoutes, extractRoutesMetadata } from './routes'
 const server = express()
 const publicPath = path.join(__dirname, '..', 'client', 'assets')
 
-server.use(express.static(publicPath))
+// eslint-disable-next-line
+server.use('/public', express['static'](path.join(__dirname, '/dist')))
+server.use(express.static(path.join(__dirname, '..', 'client', 'components', 'assets')))
+
 server.use(compression())
 server.use(bodyParser.json())
 

@@ -41,3 +41,36 @@ export async function getCurrentUser(req, res) {
     res.status(500).json(error)
   }
 }
+
+/**
+ * Create new user
+ *
+ * @export
+ * @param {any} req
+ * @param {any} res
+ */
+
+export async function Register(req, res) {
+  try {
+    const response = await axios.post(API.user.apis.REGISTER, req.body)
+    req.session.token = response.data.token
+    res.status(200).json(response.data)
+  } catch (error) {
+    const { status, data } = error.response
+    res.status(status).send(data)
+  }
+}
+
+export async function ChangePassword(req, res) {
+  try {
+    const options = {
+      oldPassword: req.body.oldPassword,
+      newPassword: req.body.newPassword
+    }
+    const response = await axios.put(`${API.user.apis.CHANGE_PASSWORD}/${req.params.id}/password?access_token=${req.session.token}`, options)
+    res.status(200).send(response.data)
+  } catch (error) {
+    const { status, data } = error.response
+    res.status(status).send(data)
+  }
+}
