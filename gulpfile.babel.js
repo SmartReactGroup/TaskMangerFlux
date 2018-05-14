@@ -23,7 +23,7 @@ const { host, port } = development
 // const devURI = `http://${host}:${port}`
 const serURI = `http://${server.host}:${server.port}`
 
-const browserSyncPort = 9000
+const browserSyncPort = 9001
 const browserSyncURL = `http://${server.host}:${browserSyncPort}`
 let firstStart = true
 
@@ -107,9 +107,10 @@ gulp.task('express:dev', () => {
     .on('start', () => {
       whenServerReady(browserSyncPort, () => {
         if (firstStart) {
+          firstStart = false
           open(browserSyncURL)
         } else {
-          browserSync.reload()
+          browserSyncServer.reload()
         }
       })
     })

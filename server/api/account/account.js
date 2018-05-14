@@ -14,11 +14,6 @@ export async function login(req, res) {
     req.session.token = response.data.token
     res.status(200).json(response.data)
   } catch (error) {
-    // const anthError = {
-    //   status: error.response.status,
-    //   errMsg: error.response.data
-    // }
-
     const { status, data } = error.response
     res.status(status).send(data.message)
   }
@@ -65,16 +60,13 @@ export async function Register(req, res) {
 }
 
 export async function ChangePassword(req, res) {
-  console.log('+++++++++++', req.body)
   try {
     const options = {
-      headers: { Authorization: `Bearer ${req.session.token}` },
-      query: { access_token: req.session.token },
       oldPassword: req.body.oldPassword,
       newPassword: req.body.newPassword
     }
-    const response = await axios.put(`${API.user.apis.CHANGE_PASSWORD}/${req.params.id}/password`, options)
-    console.log('111111111', response)
+    const response = await axios.put(`${API.user.apis.CHANGE_PASSWORD}/${req.params.id}/password?access_token=${req.session.token}`, options)
+    res.status(200).send(response.data)
   } catch (error) {
     const { status, data } = error.response
     res.status(status).send(data)
