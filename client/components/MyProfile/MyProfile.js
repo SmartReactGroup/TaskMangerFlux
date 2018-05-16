@@ -16,7 +16,7 @@ class MyProfile extends React.Component {
     this._onStoreChange = this._onStoreChange.bind(this)
     this.userStore = this.context.getStore(UserStore)
     this.state = {
-      user: this.context.getStore(UserStore).getUser(),
+      user: this.context.getStore(UserStore).getCurrentUser(),
       imgUrl: '/imgs/avator.jpg',
       selectedFile: null
     }

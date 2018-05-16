@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { Layout } from 'antd'
 import { Nav } from '../components'
-import { UserStore } from '../stores'
+// import { UserStore } from '../stores'
 
 const { Header, Content, Footer } = Layout
 
@@ -14,33 +14,6 @@ class App extends React.Component {
     location: PropTypes.object
   }
 
-  static contextTypes = {
-    getStore: PropTypes.func
-  }
-
-  constructor(props, context) {
-    super(props)
-    this.context = context
-    this._onStoreChange = this._onStoreChange.bind(this)
-    this.userStore = this.context.getStore(UserStore)
-    this.state = {
-      user: this.context.getStore(UserStore).getCurrentUser()
-    }
-  }
-  componentDidMount() {
-    this.context.getStore(UserStore).addChangeListener(this._onStoreChange)
-  }
-
-  componentWillUnmount() {
-    this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
-  }
-
-  _onStoreChange() {
-    const result = {}
-    result.user = this.userStore.getCurrentUser()
-    this.setState(result)
-  }
-
   render() {
     const appInitData = Object.assign({}, { name: 'TaskManger' })
     const childs = React.cloneElement(this.props.children, appInitData)
@@ -48,7 +21,7 @@ class App extends React.Component {
       <Layout className="layout">
         <Header>
           <div className="logo" />
-          <Nav currentLocation={this.props.location} user={this.state.user} />
+          <Nav currentLocation={this.props.location} />
         </Header>
         <Content style={{ padding: '10px 50px' }}>
           <div style={{ padding: '24px' }}>

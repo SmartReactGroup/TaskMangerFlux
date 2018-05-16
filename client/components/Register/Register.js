@@ -26,7 +26,6 @@ class RegistrationForm extends React.Component {
     this.state = {
       confirmDirty: false,
       msg: '',
-      user: this.userStore.getCurrentUser(),
       showMsg: false,
       warningBarType: '',
       redirectToReferrer: false

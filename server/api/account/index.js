@@ -7,5 +7,6 @@ router.post('/login', account.login)
 router.post('/me', account.getCurrentUser)
 router.post('/register', account.Register)
 router.post('/:id/password', account.ChangePassword)
+router.post('/logout', account.Logout)
 
 export default router

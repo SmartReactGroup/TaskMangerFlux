@@ -3,6 +3,7 @@ import { Form, Input, Button } from 'antd'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
+import { WarningBanner } from '../../components'
 
 const FormItem = Form.Item
 
@@ -20,7 +21,38 @@ class Settings extends React.Component {
     super(props)
     this.context = context
     this.state = {
-      user: this.context.getStore(UserStore).getUser()
+      user: this.context.getStore(UserStore).getCurrentUser(),
+      showMsg: false,
+      warningBarType: '',
+      msg: ''
+    }
+    this._onStoreChange = this._onStoreChange.bind(this)
+  }
+
+  componentDidMount() {
+    this.context.getStore(UserStore).addChangeListener(this._onStoreChange)
+  }
+
+  componentWillUnmount() {
+    this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
+  }
+
+  _onStoreChange(actions) {
+    const result = {}
+    const authEvent = ['CHANGE_PASSWORD_SUCCESS', 'CHANGE_PASSWORD_FAILED']
+    if (authEvent.includes(actions.event)) {
+      result.showMsg = true
+      result.msg = actions.msg
+      if (actions.event === 'CHANGE_PASSWORD_SUCCESS') {
+        result.warningBarType = 'success'
+      }
+      if (actions.event === 'CHANGE_PASSWORD_FAILED') {
+        result.warningBarType = 'error'
+      }
+    }
+    if (Object.keys(result).length) {
+      console.log(result)
+      this.setState(result)
     }
   }
 
@@ -33,6 +65,10 @@ class Settings extends React.Component {
         this.context.executeAction(AccountActions.ChangePassword, values)
       }
     })
+  }
+
+  onClose() {
+    this.setState({ showMsg: false })
   }
 
 
@@ -60,7 +96,6 @@ class Settings extends React.Component {
         }
       }
     }
-    console.log(this.props)
     return (
       <div className="setting-page">
         <h2>Change password</h2>
@@ -86,6 +121,7 @@ class Settings extends React.Component {
               Change
             </Button>
           </FormItem>
+          {this.state.showMsg && <WarningBanner msg={this.state.msg} type={this.state.warningBarType} onClose={() => this.onClose()} />}
         </Form>
       </div>
     )

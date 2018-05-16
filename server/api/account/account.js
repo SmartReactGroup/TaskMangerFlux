@@ -74,3 +74,10 @@ export async function ChangePassword(req, res) {
     res.status(status).send(data)
   }
 }
+
+export function Logout(req, res) {
+  if (req.session.token) {
+    req.session.destroy()
+    res.status(200).send({ message: 'logout successfully' })
+  }
+}

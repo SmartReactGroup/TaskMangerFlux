@@ -5,7 +5,6 @@ class UserStore extends BaseStore {
   constructor(dispatcher) {
     super(dispatcher)
     this.user = null
-    // this.errMsg = null
   }
 
   loadSession(user) {
@@ -45,11 +44,35 @@ class UserStore extends BaseStore {
     })
   }
 
+  changePasswordSuccess(msg) {
+    this.emitChange({
+      event: 'CHANGE_PASSWORD_SUCCESS',
+      msg: msg.message
+    })
+  }
+
+  changePasswordFailed(msg) {
+    console.log(msg)
+    this.emitChange({
+      event: 'CHANGE_PASSWORD_FAILED',
+      msg: msg.message
+    })
+  }
+
+  logout(msg) {
+    this.user = null
+    this.emitChange({
+      event: 'LOGOUT',
+      msg: msg.message
+    })
+    console.log('logout', this.user)
+  }
   setUser(user) {
     this.user = user
   }
 
   getCurrentUser() {
+    console.log('getCurrentuser', this.user)
     return this.user
   }
 
@@ -70,7 +93,10 @@ UserStore.handlers = {
   LOAD_SESSION_SUCCESS: 'loadSession',
   LOGIN_FAILED: 'loginFailed',
   REGISTER_SUCCESS: 'registerSuccess',
-  REGISTER_FAILED: 'registerFailed'
+  REGISTER_FAILED: 'registerFailed',
+  CHANGE_PASSWORD_SUCCESS: 'changePasswordSuccess',
+  CHANGE_PASSWORD_FAILED: 'changePasswordFailed',
+  LOGOUT: 'logout'
 }
 
 export default UserStore

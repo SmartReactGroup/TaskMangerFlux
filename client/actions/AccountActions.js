@@ -5,7 +5,8 @@ const ACCOUNT_URI = {
   LOGIN: '/api/users/login',
   LOAD_SESSION: '/api/users/me',
   REGISTER: '/api/users/register',
-  CHANGE_PASSWORD: '/api/users/changePassword'
+  CHANGE_PASSWORD: '/api/users/changePassword',
+  LOGOUT: '/api/users/logout'
 }
 
 export default {
@@ -61,7 +62,19 @@ export default {
 
   ChangePassword: (actionContext, payload, done) => {
     console.log(payload)
-    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/password`, payload).then(() => {
+    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
+      actionContext.dispatch('CHANGE_PASSWORD_SUCCESS', res.data)
+      done()
+    }).catch((err) => {
+      const errResponse = err.response.data
+      actionContext.dispatch('CHANGE_PASSWORD_FAILED', errResponse)
+      done()
+    })
+  },
+
+  Logout: (actionContext, payload, done) => {
+    HttpClient.post(ACCOUNT_URI.LOGOUT).then((res) => {
+      actionContext.dispatch('LOGOUT', res.data)
       done()
     })
   }

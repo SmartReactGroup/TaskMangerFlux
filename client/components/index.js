@@ -8,4 +8,5 @@ export App from './App'
 export Register from './Register/Register'
 export MyProfile from './MyProfile/MyProfile'
 export Settings from './Settings/Settings'
+export Logout from './Logout/Logout'
 
