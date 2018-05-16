@@ -29,9 +29,11 @@ class Logout extends React.Component {
 
   _onStoreChange(action) {
     const result = {}
-    result.msg = action.msg
-    result.user = this.userStore.getCurrentUser()
-    result.redirectToReferrer = true
+    if (action.event === 'LOGOUT') {
+      result.msg = action.msg
+      result.user = this.userStore.getCurrentUser()
+      result.redirectToReferrer = true
+    }
     if (Object.keys(result).length) {
       this.setState(result)
     }

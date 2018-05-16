@@ -1,6 +1,6 @@
 import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
@@ -16,7 +16,7 @@ class Login extends React.Component {
   }
 
   static propTypes = {
-    location: PropTypes.object
+    history: PropTypes.object
   }
 
   constructor(props, context) {
@@ -54,17 +54,15 @@ class Login extends React.Component {
       result.user = this.userStore.getCurrentUser()
       result.responseMsg = actions.msg
       result.showMsg = true
-      if (actions.event === 'LOGIN_FAILED') {
-        result.warningBarType = 'error'
-      }
-      else {
-        result.warningBarType = 'success'
-        result.redirectToReferrer = true
-      }
+      actions.event === 'LOGIN_FAILED' ? result.warningBarType = 'error' : result.warningBarType = 'success'
     }
 
     if (Object.keys(result).length) {
-      this.setState(result)
+      this.setState(result, () => {
+        if (actions.event === 'LOGIN_SUCCESS') {
+          this.props.history.push('/')
+        }
+      })
     }
   }
 
@@ -86,11 +84,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { redirectToReferrer } = this.state
-    if (redirectToReferrer) {
-      return <Redirect to={from} />
-    }
+    // const { from } = this.props.location.state || { from: { pathname: '/' } }
     return (
       <div className="login-page">
         <Form>

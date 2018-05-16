@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Form, Input, Button } from 'antd'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
@@ -11,7 +11,8 @@ const FormItem = Form.Item
 class RegistrationForm extends React.Component {
   static propTypes = {
     form: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    history: PropTypes.object
   }
 
   static contextTypes = {
@@ -27,8 +28,7 @@ class RegistrationForm extends React.Component {
       confirmDirty: false,
       msg: '',
       showMsg: false,
-      warningBarType: '',
-      redirectToReferrer: false
+      warningBarType: ''
     }
     this._onStoreChange = this._onStoreChange.bind(this)
   }
@@ -47,16 +47,22 @@ class RegistrationForm extends React.Component {
     if (authEvent.includes(actions.event)) {
       result.user = this.userStore.getCurrentUser()
       result.msg = actions.msg
-      if (actions.event === 'REGISTER_SUCCESS') {
-        result.redirectToReferrer = true
-      }
-      if (actions.event === 'REGISTER_FAILED') {
-        result.showMsg = true
-        result.warningBarType = 'error'
+      switch (actions.event) {
+        case 'REGISTER_SUCCESS':
+          result.redirectToReferrer = true
+          break
+        case 'REGISTER_FAILED':
+          result.showMsg = true
+          result.warningBarType = 'error'
+          break
+        default:
       }
     }
     if (Object.keys(result).length) {
       this.setState(result)
+      if (actions.event === 'REGISTER_SUCCESS') {
+        this.props.history.push('/')
+      }
     }
   }
 
@@ -98,12 +104,7 @@ class RegistrationForm extends React.Component {
   }
 
   render() {
-    const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { redirectToReferrer } = this.state
     const { getFieldDecorator } = this.props.form
-    if (redirectToReferrer) {
-      return <Redirect to={from} />
-    }
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
