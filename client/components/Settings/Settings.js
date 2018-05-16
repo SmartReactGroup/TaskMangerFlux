@@ -51,7 +51,6 @@ class Settings extends React.Component {
       }
     }
     if (Object.keys(result).length) {
-      console.log(result)
       this.setState(result)
     }
   }
@@ -60,7 +59,6 @@ class Settings extends React.Component {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log(values)
         values.user = this.state.user
         this.context.executeAction(AccountActions.ChangePassword, values)
       }

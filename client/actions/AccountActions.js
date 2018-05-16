@@ -61,7 +61,6 @@ export default {
   },
 
   ChangePassword: (actionContext, payload, done) => {
-    console.log(payload)
     HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
       actionContext.dispatch('CHANGE_PASSWORD_SUCCESS', res.data)
       done()

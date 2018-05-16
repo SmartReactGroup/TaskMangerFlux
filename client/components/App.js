@@ -11,7 +11,8 @@ class App extends React.Component {
 
   static propTypes = {
     children: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    history: PropTypes.object
   }
 
   render() {
@@ -21,7 +22,7 @@ class App extends React.Component {
       <Layout className="layout">
         <Header>
           <div className="logo" />
-          <Nav currentLocation={this.props.location} />
+          <Nav currentLocation={this.props.location} history={this.props.history} />
         </Header>
         <Content style={{ padding: '10px 50px' }}>
           <div style={{ padding: '24px' }}>

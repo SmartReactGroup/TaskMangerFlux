@@ -52,7 +52,6 @@ class UserStore extends BaseStore {
   }
 
   changePasswordFailed(msg) {
-    console.log(msg)
     this.emitChange({
       event: 'CHANGE_PASSWORD_FAILED',
       msg: msg.message
@@ -65,14 +64,12 @@ class UserStore extends BaseStore {
       event: 'LOGOUT',
       msg: msg.message
     })
-    console.log('logout', this.user)
   }
   setUser(user) {
     this.user = user
   }
 
   getCurrentUser() {
-    console.log('getCurrentuser', this.user)
     return this.user
   }
 

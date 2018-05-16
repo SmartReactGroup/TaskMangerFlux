@@ -70,7 +70,6 @@ class RegistrationForm extends React.Component {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values)
         this.context.executeAction(AccountActions.Register, values)
       }
     })
@@ -95,8 +94,6 @@ class RegistrationForm extends React.Component {
   handleConfirmBlur = (e) => {
     const { value } = e.target
     this.setState({ confirmDirty: this.state.confirmDirty || !!value })
-    console.log(this.state.confirmDirty)
-
   }
 
   onClose() {

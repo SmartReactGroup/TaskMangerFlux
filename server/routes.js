@@ -2,8 +2,7 @@
 import React from 'react'
 import { Switch } from 'react-router'
 import { Route, matchPath, Redirect } from 'react-router-dom'
-
-import { Home, About, Login, Register, MyProfile, Settings, Logout } from '../client/components'
+import { Home, About, Login, Register, MyProfile, Settings } from '../client/components'
 import { pathPrefix } from '../configs'
 import App from '../client/components/App'
 
@@ -55,10 +54,6 @@ const routesConfig = [{
         {
           path: '/me/settings',
           component: Settings
-        },
-        {
-          path: '/me/logout',
-          component: Logout
         }
       ]
     }

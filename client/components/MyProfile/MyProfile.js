@@ -36,7 +36,6 @@ class MyProfile extends React.Component {
   }
 
   fileUpload(e) {
-    console.log(e.target.files[0])
     this.setState({ selectedFile: e.target.files[0] })
     this.context.executeAction(AccountActions.UploadAvator, this.state.selectedFile)
   }

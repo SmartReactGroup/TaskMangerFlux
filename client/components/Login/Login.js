@@ -24,19 +24,16 @@ class Login extends React.Component {
     this.context = context
     this._onStoreChange = this._onStoreChange.bind(this)
     this.userStore = this.context.getStore(UserStore)
-    this.state = this.getStoreState()
-  }
-
-  getStoreState() {
-    return {
+    this.state = {
       email: '',
       password: '',
-      user: this.context.getStore(UserStore).getCurrentUser(),
       responseMsg: '',
       showMsg: false,
       warningBarType: '',
       redirectToReferrer: false
     }
+
+    this.state.user = this.userStore.getCurrentUser()
   }
 
   componentDidMount() {
@@ -54,7 +51,9 @@ class Login extends React.Component {
       result.user = this.userStore.getCurrentUser()
       result.responseMsg = actions.msg
       result.showMsg = true
-      actions.event === 'LOGIN_FAILED' ? result.warningBarType = 'error' : result.warningBarType = 'success'
+
+      // actions.event === 'LOGIN_FAILED' ? result.warningBarType = 'error' : result.warningBarType = 'success'
+      result.warningBarType = actions.event === 'LOGIN_FAILED' ? 'error' : 'success'
     }
 
     if (Object.keys(result).length) {
@@ -84,26 +83,26 @@ class Login extends React.Component {
   }
 
   render() {
-    // const { from } = this.props.location.state || { from: { pathname: '/' } }
+    const { email, password, showMsg, responseMsg, warningBarType } = this.state
     return (
       <div className="login-page">
         <Form>
           <FormItem>
-            <Input id="email" type="text" placeholder="Email" value={this.state.email} onChange={(e) => this.changeHandle(e)} />
+            <Input id="email" type="text" placeholder="Email" value={email} onChange={(e) => this.changeHandle(e)} />
           </FormItem>
           <FormItem>
-            <Input id="password" type="password" placeholder="Password" value={this.state.password} onChange={(e) => this.changeHandle(e)} />
+            <Input id="password" type="password" placeholder="Password" value={password} onChange={(e) => this.changeHandle(e)} />
           </FormItem>
           <FormItem>
             <Checkbox>Remember me</Checkbox>
-            <a className="login-form-forgot" href=""> Forgot password</a><span> or </span><Link to="/register">register now</Link>
+            <a className="login-form-forgot" href=""> Forgot password</a><span> or </span><Link to="/register">Register now</Link>
           </FormItem>
           <FormItem>
             <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => this.handleSubmit()} >
               Log in
             </Button>
           </FormItem>
-          {this.state.showMsg && <WarningBanner msg={this.state.responseMsg} onClose={() => this.onClose()} type={this.state.warningBarType} />}
+          {showMsg && <WarningBanner msg={responseMsg} onClose={() => this.onClose()} type={warningBarType} />}
         </Form>
       </div>
     )
