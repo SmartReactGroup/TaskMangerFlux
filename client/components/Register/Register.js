@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, message } from 'antd'
 import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
@@ -47,22 +47,18 @@ class RegistrationForm extends React.Component {
     if (authEvent.includes(actions.event)) {
       result.user = this.userStore.getCurrentUser()
       result.msg = actions.msg
-      switch (actions.event) {
-        case 'REGISTER_SUCCESS':
-          result.redirectToReferrer = true
-          break
-        case 'REGISTER_FAILED':
-          result.showMsg = true
-          result.warningBarType = 'error'
-          break
-        default:
+      if (actions.event === 'REGISTER_FAILED') {
+        result.warningBarType = 'error'
+        result.showMsg = true
       }
     }
     if (Object.keys(result).length) {
-      this.setState(result)
-      if (actions.event === 'REGISTER_SUCCESS') {
-        this.props.history.push('/')
-      }
+      this.setState(result, () => {
+        if (actions.event === 'REGISTER_SUCCESS') {
+          this.props.history.push('/')
+          message.success('Register successfully')
+        }
+      })
     }
   }
 
@@ -125,7 +121,7 @@ class RegistrationForm extends React.Component {
       }
     }
     return (
-      <div className="register-page">
+      <div className="register-page" style={{ padding: '24px', background: 'white' }}>
         <h2>Register Form</h2>
         <Form onSubmit={this.handleSubmit}>
           <FormItem {...formItemLayout} label="Name">

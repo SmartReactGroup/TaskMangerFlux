@@ -20,14 +20,12 @@ class App extends React.Component {
     const childs = React.cloneElement(this.props.children, appInitData)
     return (
       <Layout className="layout">
-        <Header>
+        <Header style={{ background: 'white', borderBottom: '1px solid #e8e8e8', boxShadow: '1px 3px 5px #e8e8e8' }}>
           <div className="logo" />
           <Nav currentLocation={this.props.location} history={this.props.history} />
         </Header>
-        <Content style={{ padding: '10px 50px' }}>
-          <div style={{ padding: '24px' }}>
-            {childs}
-          </div>
+        <Content style={{ padding: '10px 50px', background: '#f0f2f5', marginTop: '10px' }}>
+          {childs}
         </Content>
         <Footer style={{ textAlign: 'center' }}>
            TaskMangerFlux Design @2018

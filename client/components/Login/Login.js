@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import AccountActions from '../../actions/AccountActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
+import { Message } from '../../utils'
 
 const FormItem = Form.Item
 
@@ -16,7 +17,8 @@ class Login extends React.Component {
   }
 
   static propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    form: PropTypes.object
   }
 
   constructor(props, context) {
@@ -25,12 +27,9 @@ class Login extends React.Component {
     this._onStoreChange = this._onStoreChange.bind(this)
     this.userStore = this.context.getStore(UserStore)
     this.state = {
-      email: '',
-      password: '',
       responseMsg: '',
       showMsg: false,
-      warningBarType: '',
-      redirectToReferrer: false
+      warningBarType: ''
     }
 
     this.state.user = this.userStore.getCurrentUser()
@@ -51,31 +50,29 @@ class Login extends React.Component {
       result.user = this.userStore.getCurrentUser()
       result.responseMsg = actions.msg
       result.showMsg = true
-
-      // actions.event === 'LOGIN_FAILED' ? result.warningBarType = 'error' : result.warningBarType = 'success'
       result.warningBarType = actions.event === 'LOGIN_FAILED' ? 'error' : 'success'
     }
 
     if (Object.keys(result).length) {
       this.setState(result, () => {
         if (actions.event === 'LOGIN_SUCCESS') {
-          this.props.history.push('/')
+          Message.success('Login successfully', () => this.props.history.push('/'))
         }
       })
     }
   }
 
-  changeHandle(event) {
-    const labelId = event.target.id
-    if (labelId === 'email') {
-      this.setState({ email: event.target.value })
-    } else {
-      this.setState({ password: event.target.value })
-    }
-  }
+  // handleSubmit() {
+  //   this.context.executeAction(AccountActions.Login, this.state)
+  // }
 
-  handleSubmit() {
-    this.context.executeAction(AccountActions.Login, this.state)
+  handleSubmit = (e) => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        this.context.executeAction(AccountActions.Login, values)
+      }
+    })
   }
 
   onClose() {
@@ -83,24 +80,67 @@ class Login extends React.Component {
   }
 
   render() {
-    const { email, password, showMsg, responseMsg, warningBarType } = this.state
+    const { showMsg, responseMsg, warningBarType } = this.state
+    const { getFieldDecorator } = this.props.form
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 10 }
+      }
+    }
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0
+        },
+        sm: {
+          span: 16,
+          offset: 8
+        }
+      }
+    }
     return (
-      <div className="login-page">
-        <Form>
-          <FormItem>
-            <Input id="email" type="text" placeholder="Email" value={email} onChange={(e) => this.changeHandle(e)} />
+      <div className="login-page" style={{ padding: '24px', background: 'white' }}>
+        <h2>Login Form</h2>
+        <Form onSubmit={this.handleSubmit}>
+          <FormItem {...formItemLayout} label="Email">
+            {getFieldDecorator('email', {
+              rule: [{
+                type: 'email',
+                message: 'The input is not valid E-mail!'
+              }, {
+                required: true,
+                message: 'Please input your email!'
+              }]
+            })(<Input />)}
           </FormItem>
-          <FormItem>
-            <Input id="password" type="password" placeholder="Password" value={password} onChange={(e) => this.changeHandle(e)} />
+          <FormItem {...formItemLayout} label="Password">
+            {getFieldDecorator('password', {
+              rule: [{
+                required: true,
+                message: 'Please input your email!'
+              }]
+            })(<Input />)}
           </FormItem>
-          <FormItem>
-            <Checkbox>Remember me</Checkbox>
-            <a className="login-form-forgot" href=""> Forgot password</a><span> or </span><Link to="/register">Register now</Link>
+          <FormItem {...tailFormItemLayout}>
+            {getFieldDecorator('remember', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(
+              <Checkbox>Remember me</Checkbox>
+            )}
+            <a className="login-form-forgot" href=""> Forgot password</a>
           </FormItem>
-          <FormItem>
-            <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => this.handleSubmit()} >
-              Log in
+          <FormItem {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit">
+            Log in
             </Button>
+            <span> or </span><Link to="/register">Register now</Link>
           </FormItem>
           {showMsg && <WarningBanner msg={responseMsg} onClose={() => this.onClose()} type={warningBarType} />}
         </Form>
@@ -109,4 +149,6 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+const WrappedLoginForm = Form.create()(Login)
+export default WrappedLoginForm
+

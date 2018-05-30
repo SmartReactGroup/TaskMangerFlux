@@ -5,7 +5,6 @@ const ACCOUNT_URI = {
   LOGIN: '/api/users/login',
   LOAD_SESSION: '/api/users/me',
   REGISTER: '/api/users/register',
-  CHANGE_PASSWORD: '/api/users/changePassword',
   LOGOUT: '/api/users/logout'
 }
 
@@ -49,7 +48,7 @@ export default {
   },
 
   UploadAvator: (actionContext, payload, done) => {
-    HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/avatar`, payload.content).then((res) => {
       if (res) {
         console.log(res)
       }
@@ -67,6 +66,16 @@ export default {
     }).catch((err) => {
       const errResponse = err.response.data
       actionContext.dispatch('CHANGE_PASSWORD_FAILED', errResponse)
+      done()
+    })
+  },
+
+  ChangeUserInfo: (actionContext, payload, done) => {
+    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/userinfo`, payload).then((res) => {
+      actionContext.dispatch('CHANGE_USER_INFO', res.data)
+      done()
+    }).catch((err) => {
+      console.error(err)
       done()
     })
   },

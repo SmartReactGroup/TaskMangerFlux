@@ -75,6 +75,34 @@ export async function ChangePassword(req, res) {
   }
 }
 
+export async function ChangeUserInfo(req, res) {
+  try {
+    const options = {
+      name: req.body.name
+    }
+    const response = await axios.put(`${API.user.apis.CHANGE_USER_INFO}/${req.params.id}?access_token=${req.session.token}`, options)
+    res.status(200).send(response.data)
+  } catch (error) {
+    const { status, data } = error.response
+    res.status(status).send(data)
+  }
+}
+
+export async function changeAvator(req, res) {
+  const options = {
+    formdata: req.body
+  }
+  axios({
+    method: 'post',
+    url: `${API.user.apis.CHANGE_USER_AVATOR}/${req.params.id}/avatar?fieldname=avatar`,
+    data: options.formdata
+  }).then((response) => {
+    res.status(200).send(response.data)
+  }).catch((error) => {
+    console.log(error)
+  })
+}
+
 export function Logout(req, res) {
   if (req.session.token) {
     req.session.destroy()

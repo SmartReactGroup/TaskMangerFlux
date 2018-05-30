@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu, Icon, message } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { UserStore } from '../../stores'
 import { AccountActions } from '../../actions'
@@ -46,7 +46,13 @@ class Nav extends React.Component {
 
   _onStoreChange(actions) {
     const result = {}
-    const authEvents = ['LOGIN_FAILED', 'LOGIN_SUCCESS', 'LOGOUT']
+    const authEvents = [
+      'LOGIN_FAILED',
+      'LOGIN_SUCCESS',
+      'LOGOUT',
+      'REGISTER_FAILED',
+      'REGISTER_SUCCESS'
+    ]
     if (authEvents.includes(actions.event)) {
       const dynamicNavItems = _.cloneDeep(this.state.dynamicNavItems)
       result.currentUser = this.context.getStore(UserStore).getCurrentUser()
@@ -60,6 +66,7 @@ class Nav extends React.Component {
       this.setState(result, () => {
         if (actions.event === 'LOGOUT') {
           this.props.history.push('/')
+          message.success('Logout successfully')
         }
       })
     }
@@ -81,10 +88,10 @@ class Nav extends React.Component {
 
     return (
       <Menu
-        theme="dark"
+        theme="light"
         mode="horizontal"
         selectedKeys={[pathname]}
-        style={{ lineHeight: '64px' }}
+        style={{ lineHeight: '63px', borderBottom: 'none', background: 'none' }}
       >
         {activeNavItems.map((navItem) =>
           <Menu.Item key={navItem.path}><NavLink to={navItem.path}>{navItem.name}</NavLink></Menu.Item>

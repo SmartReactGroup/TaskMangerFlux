@@ -12,7 +12,9 @@ export default {
       LOGIN: `${ACCOUNT_API_ADDRESS}/auth/local`,
       GET_CURRENT_USER: `${ACCOUNT_API_ADDRESS}/api/users/me`,
       REGISTER: `${ACCOUNT_API_ADDRESS}/api/users`,
-      CHANGE_PASSWORD: `${ACCOUNT_API_ADDRESS}/api/users`
+      CHANGE_PASSWORD: `${ACCOUNT_API_ADDRESS}/api/users`,
+      CHANGE_USER_INFO: `${ACCOUNT_API_ADDRESS}/api/users`,
+      CHANGE_USER_AVATOR: `${ACCOUNT_API_ADDRESS}/api/users`
     }
   }
 }

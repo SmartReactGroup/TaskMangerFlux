@@ -58,6 +58,12 @@ class UserStore extends BaseStore {
     })
   }
 
+  changeUserInfo() {
+    this.emitChange({
+      event: 'CHANGE_USER_INFO'
+    })
+  }
+
   logout(msg) {
     this.user = null
     this.emitChange({
@@ -93,6 +99,7 @@ UserStore.handlers = {
   REGISTER_FAILED: 'registerFailed',
   CHANGE_PASSWORD_SUCCESS: 'changePasswordSuccess',
   CHANGE_PASSWORD_FAILED: 'changePasswordFailed',
+  CHANGE_USER_INFO: 'changeUserInfo',
   LOGOUT: 'logout'
 }
 
