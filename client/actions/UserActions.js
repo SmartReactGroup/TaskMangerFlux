@@ -1,6 +1,7 @@
+import axios from 'axios'
 import HttpClient from '../utils/httpClient'
 
-const ACCOUNT_URI = {
+const USER_URI = {
   USERS: '/api/users',
   LOGIN: '/api/users/login',
   LOAD_SESSION: '/api/users/me',
@@ -10,8 +11,8 @@ const ACCOUNT_URI = {
 
 export default {
   Login: (actionContext, payload, done) => {
-    HttpClient.post(ACCOUNT_URI.LOGIN, payload).then(() => {
-      HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+    HttpClient.post(USER_URI.LOGIN, payload).then(() => {
+      HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
         actionContext.dispatch('LOGIN_SUCCESS', res.data)
         done()
       })
@@ -21,9 +22,8 @@ export default {
     })
   },
 
-
   LoadSession: (actionContext, payload, done) => {
-    HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+    HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
       if (res) {
         actionContext.dispatch('LOAD_SESSION_SUCCESS', res.data)
       }
@@ -35,8 +35,8 @@ export default {
   },
 
   Register: (actionContext, payload, done) => {
-    HttpClient.post(ACCOUNT_URI.REGISTER, payload).then(() => {
-      HttpClient.post(ACCOUNT_URI.LOAD_SESSION).then((res) => {
+    HttpClient.post(USER_URI.REGISTER, payload).then(() => {
+      HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
         actionContext.dispatch('REGISTER_SUCCESS', res.data)
         done()
       })
@@ -48,19 +48,20 @@ export default {
   },
 
   UploadAvator: (actionContext, payload, done) => {
-    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/avatar`, payload.content).then((res) => {
-      if (res) {
-        console.log(res)
-      }
+    axios({
+      method: 'POST',
+      url: `/api/users/${payload.user._id}/avatar?fieldname=avatar`,
+      data: payload.content
+    }).then((response) => {
+      console.log(response)
       done()
-    }).catch((err) => {
-      console.log(err)
-      done()
+    }).catch((error) => {
+      console.log(error)
     })
   },
 
   ChangePassword: (actionContext, payload, done) => {
-    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
+    HttpClient.post(`${USER_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
       actionContext.dispatch('CHANGE_PASSWORD_SUCCESS', res.data)
       done()
     }).catch((err) => {
@@ -71,7 +72,7 @@ export default {
   },
 
   ChangeUserInfo: (actionContext, payload, done) => {
-    HttpClient.post(`${ACCOUNT_URI.USERS}/${payload.user._id}/userinfo`, payload).then((res) => {
+    HttpClient.post(`${USER_URI.USERS}/${payload.user._id}/userinfo`, payload).then((res) => {
       actionContext.dispatch('CHANGE_USER_INFO', res.data)
       done()
     }).catch((err) => {
@@ -81,7 +82,7 @@ export default {
   },
 
   Logout: (actionContext, payload, done) => {
-    HttpClient.post(ACCOUNT_URI.LOGOUT).then((res) => {
+    HttpClient.post(USER_URI.LOGOUT).then((res) => {
       actionContext.dispatch('LOGOUT', res.data)
       done()
     })

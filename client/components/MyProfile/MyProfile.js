@@ -2,9 +2,10 @@ import React from 'react'
 import { Icon, Modal } from 'antd'
 import PropTypes from 'prop-types'
 import { UserStore } from '../../stores'
-import AccountActions from '../../actions/AccountActions'
+import UserActions from '../../actions/UserActions'
 
 class MyProfile extends React.Component {
+
   static contextTypes = {
     getStore: PropTypes.func,
     executeAction: PropTypes.func
@@ -16,8 +17,8 @@ class MyProfile extends React.Component {
     this._onStoreChange = this._onStoreChange.bind(this)
     this.userStore = this.context.getStore(UserStore)
     this.state = {
-      user: this.context.getStore(UserStore).getCurrentUser(),
-      selectedFile: null,
+      user: this.userStore.getCurrentUser(),
+      avatar: null,
       visible: false
     }
   }
@@ -60,7 +61,7 @@ class MyProfile extends React.Component {
     const reader = new FileReader()
     reader.addEventListener('load', () => {
       this.setState({
-        selectedFile: file,
+        avatar: file,
         visible: true
       }, () => {
         preview.src = reader.result
@@ -71,7 +72,7 @@ class MyProfile extends React.Component {
     }
   }
 
-  previewFile(e) {
+  previewAvatar(e) {
     const file = e.target.files[0]
     const reader = new FileReader()
     reader.addEventListener('load', function () {
@@ -80,7 +81,7 @@ class MyProfile extends React.Component {
     }, false)
     if (file) {
       this.setState({
-        selectedFile: file,
+        avatar: file,
         visible: true
       }, () => {
         reader.readAsDataURL(file)
@@ -89,13 +90,13 @@ class MyProfile extends React.Component {
   }
 
   fileUpload() {
+    const { avatar, user } = this.state
     const formData = new FormData()
-    formData.append('avatar', this.state.selectedFile, this.state.selectedFile.name)
-    const options = {
+    formData.append('avatar', avatar, avatar.name)
+    this.context.executeAction(UserActions.UploadAvator, {
       content: formData,
-      user: this.state.user
-    }
-    this.context.executeAction(AccountActions.UploadAvator, options)
+      user
+    })
   }
 
   render() {
@@ -110,7 +111,7 @@ class MyProfile extends React.Component {
           <div className="userAvator">
             <div className="overlay">
               <div className="text"><Icon type="camera-o" /><br /> Change Avator</div>
-              <a><input className="avatorUpload" type="file" onChange={(e) => this.previewFile(e)} /></a>
+              <a><input className="avatorUpload" name="avatar" type="file" onChange={(e) => this.previewAvatar(e)} /></a>
             </div>
             <img className="avatorImg" src="/imgs/avator.jpg" alt="" />
           </div>

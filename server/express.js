@@ -13,7 +13,6 @@ import serialize from 'serialize-javascript'
 import session from 'express-session'
 import connectMongo from 'connect-mongo'
 import chalk from 'chalk'
-// import debugLib from 'debug'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import axios from 'axios'
@@ -25,11 +24,11 @@ import assets from '../configs/assets'
 import app from '../client/app'
 import HtmlComponent from '../client/components/Html'
 import serverConfig from '../configs/server'
-import { user } from './api'
+import errors from './components/errors'
+import { API } from './api/user/service'
 import { createRoutes, extractRoutesMetadata } from './routes'
 
-// const env = process.env.NODE_ENV
-// const debug = debugLib('task-manager')
+const env = process.env.NODE_ENV
 const server = express()
 const publicPath = path.join(__dirname, '..', 'client', 'assets')
 
@@ -47,8 +46,9 @@ server.use(
   })
 )
 
-// apis
-server.use(user.url, user.controller)
+// eslint-disable-next-line
+server.use('/api/users', require('./api/user'))
+server.route('/:url(api|auth|components|app|assets)/*').get(errors[404])
 server.use((req, res) => {
   const context = app.createContext({ req, res })
   const serverRender = () => {
@@ -96,9 +96,8 @@ server.use((req, res) => {
   }
 
   if (req.session && req.session.token) {
-    const options = { headers: { Authorization: `Bearer ${req.session.token}` } }
-    axios
-      .get(user.apis.GET_CURRENT_USER, options)
+    const headers = { Authorization: `Bearer ${req.session.token}` }
+    axios.get(API.GET_CURRENT_USER, { headers })
       .then((response) => {
         context.getStore('UserStore').loadSession(response.data)
         serverRender()
@@ -115,7 +114,7 @@ const port = process.env.PORT || serverConfig.port || 3000
 server.listen(port, () => {
   const dateNow = new Date()
   const dateString = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`
-  console.log(`[${chalk.gray(dateString)}] App listening on port: ${chalk.blue(port)}`)
+  console.log(`[${chalk.gray(dateString)}] App listening on port: ${chalk.blue(port)}, environment: ${env}`)
 })
 
 export default server

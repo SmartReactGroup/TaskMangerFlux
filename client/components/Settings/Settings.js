@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, Button, Tabs, Icon, message } from 'antd'
 import PropTypes from 'prop-types'
-import AccountActions from '../../actions/AccountActions'
+import UserActions from '../../actions/UserActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
 
@@ -68,7 +68,7 @@ class Settings extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         values.user = this.state.user
-        this.context.executeAction(AccountActions.ChangePassword, values)
+        this.context.executeAction(UserActions.ChangePassword, values)
       }
     })
   }
@@ -77,7 +77,7 @@ class Settings extends React.Component {
     e.preventDefault()
     const value = { name: this.props.form.getFieldValue('username') }
     value.user = this.state.user
-    this.context.executeAction(AccountActions.ChangeUserInfo, value)
+    this.context.executeAction(UserActions.ChangeUserInfo, value)
   }
 
   editUsername() {

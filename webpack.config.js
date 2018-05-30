@@ -281,7 +281,8 @@ module.exports = function makeWebpackConfig(mode) {
     process: true,
     crypto: false,
     clearImmediate: false,
-    setImmediate: false
+    setImmediate: false,
+    fs: 'empty'
   }
 
   return config

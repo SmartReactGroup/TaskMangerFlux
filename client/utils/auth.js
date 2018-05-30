@@ -1,7 +1,7 @@
 import { browserHistory } from '../utils/historyUtils'
 
 import env from './env'
-import AccountActions from '../actions/AccountActions'
+import UserActions from '../actions/UserActions'
 import configs from '../../configs'
 
 // session Mutex wrapper for fetchData
@@ -11,7 +11,7 @@ import configs from '../../configs'
 //              false(default), use history push to redirect to login page
 export default (fluxibleContext, match, options = {}) =>
   new Promise((resolve, reject) => {
-    fluxibleContext.executeAction(AccountActions.LoadSession, {}).then(resolve).catch((error) => {
+    fluxibleContext.executeAction(UserActions.LoadSession, {}).then(resolve).catch((error) => {
       // auth failed, redirect to the login page
       const { url } = match
       browserHistory.push(`${configs.pathPrefix}/login?returnUrl=${url}`)

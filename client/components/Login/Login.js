@@ -2,7 +2,7 @@ import { Form, Checkbox, Input, Button } from 'antd'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import AccountActions from '../../actions/AccountActions'
+import UserActions from '../../actions/UserActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
 import { Message } from '../../utils'
@@ -63,14 +63,14 @@ class Login extends React.Component {
   }
 
   // handleSubmit() {
-  //   this.context.executeAction(AccountActions.Login, this.state)
+  //   this.context.executeAction(UserActions.Login, this.state)
   // }
 
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.context.executeAction(AccountActions.Login, values)
+        this.context.executeAction(UserActions.Login, values)
       }
     })
   }

@@ -1,1 +1,1 @@
-export AccountActions from './AccountActions'
+export UserActions from './UserActions'

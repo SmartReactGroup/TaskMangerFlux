@@ -1,5 +1,5 @@
 import axios from 'axios'
-import API from '../../api'
+import { API } from './service'
 
 /**
  * Login with third party API
@@ -10,7 +10,7 @@ import API from '../../api'
  */
 export function login(req, res) {
   axios
-    .post(API.user.apis.LOGIN, req.body)
+    .post(API.LOGIN, req.body)
     .then((response) => {
       req.session.token = response.data.token
       res.status(200).json(response.data)
@@ -32,7 +32,7 @@ export async function getCurrentUser(req, res) {
   try {
     if (req.session.token) {
       const options = { headers: { Authorization: `Bearer ${req.session.token}` } }
-      const response = await axios.get(API.user.apis.GET_CURRENT_USER, options)
+      const response = await axios.get(API.GET_CURRENT_USER, options)
       res.status(200).json(response.data)
     } else {
       res.status(200).json(null)
@@ -52,7 +52,7 @@ export async function getCurrentUser(req, res) {
 
 export async function Register(req, res) {
   try {
-    const response = await axios.post(API.user.apis.REGISTER, req.body)
+    const response = await axios.post(API.BASE, req.body)
     req.session.token = response.data.token
     res.status(200).json(response.data)
   } catch (error) {
@@ -63,11 +63,12 @@ export async function Register(req, res) {
 
 export async function ChangePassword(req, res) {
   try {
-    const options = {
-      oldPassword: req.body.oldPassword,
-      newPassword: req.body.newPassword
-    }
-    const response = await axios.put(`${API.user.apis.CHANGE_PASSWORD}/${req.params.id}/password?access_token=${req.session.token}`, options)
+    const { body, session, params } = req
+    const url = `${API.BASE}/${params.id}/password?access_token=${session.token}`
+    const response = await axios.put(url, {
+      oldPassword: body.oldPassword,
+      newPassword: body.newPassword
+    })
     res.status(200).send(response.data)
   } catch (error) {
     const { status, data } = error.response
@@ -77,30 +78,15 @@ export async function ChangePassword(req, res) {
 
 export async function ChangeUserInfo(req, res) {
   try {
-    const options = {
-      name: req.body.name
-    }
-    const response = await axios.put(`${API.user.apis.CHANGE_USER_INFO}/${req.params.id}?access_token=${req.session.token}`, options)
+    const response = await axios.put(
+      `${API.BASE}/${req.params.id}?access_token=${req.session.token}`, {
+        name: req.body.name
+      })
     res.status(200).send(response.data)
   } catch (error) {
     const { status, data } = error.response
     res.status(status).send(data)
   }
-}
-
-export async function changeAvator(req, res) {
-  const options = {
-    formdata: req.body
-  }
-  axios({
-    method: 'post',
-    url: `${API.user.apis.CHANGE_USER_AVATOR}/${req.params.id}/avatar?fieldname=avatar`,
-    data: options.formdata
-  }).then((response) => {
-    res.status(200).send(response.data)
-  }).catch((error) => {
-    console.log(error)
-  })
 }
 
 export function Logout(req, res) {

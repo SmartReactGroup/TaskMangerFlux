@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Menu, Icon, message } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { UserStore } from '../../stores'
-import { AccountActions } from '../../actions'
+import { UserActions } from '../../actions'
 
 class Nav extends React.Component {
 
@@ -78,7 +78,7 @@ class Nav extends React.Component {
   }
 
   logout() {
-    this.context.executeAction(AccountActions.Logout)
+    this.context.executeAction(UserActions.Logout)
   }
 
   render() {

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Input, Button, message } from 'antd'
 import PropTypes from 'prop-types'
-import AccountActions from '../../actions/AccountActions'
+import UserActions from '../../actions/UserActions'
 import { UserStore } from '../../stores'
 import { WarningBanner } from '../../components'
 
@@ -66,7 +66,7 @@ class RegistrationForm extends React.Component {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.context.executeAction(AccountActions.Register, values)
+        this.context.executeAction(UserActions.Register, values)
       }
     })
   }
