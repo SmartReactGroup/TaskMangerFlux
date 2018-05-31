@@ -64,6 +64,14 @@ class UserStore extends BaseStore {
     })
   }
 
+  changeAvatar(data) {
+    this.user.images.avatar = data.avatar
+    this.emitChange({
+      event: 'CHANGE_AVATAR_SUCCESS',
+      msg: data.message
+    })
+  }
+
   logout(msg) {
     this.user = null
     this.emitChange({
@@ -100,6 +108,7 @@ UserStore.handlers = {
   CHANGE_PASSWORD_SUCCESS: 'changePasswordSuccess',
   CHANGE_PASSWORD_FAILED: 'changePasswordFailed',
   CHANGE_USER_INFO: 'changeUserInfo',
+  CHANGE_AVATAR_SUCCESS: 'changeAvatar',
   LOGOUT: 'logout'
 }
 

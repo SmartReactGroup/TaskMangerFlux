@@ -15,11 +15,13 @@ class MyProfile extends React.Component {
     super(props)
     this.context = context
     this._onStoreChange = this._onStoreChange.bind(this)
+    this.fileUpload = this.fileUpload.bind(this)
     this.userStore = this.context.getStore(UserStore)
     this.state = {
       user: this.userStore.getCurrentUser(),
       avatar: null,
-      visible: false
+      visible: false,
+      msg: ''
     }
   }
   componentDidMount() {
@@ -30,20 +32,25 @@ class MyProfile extends React.Component {
     this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
   }
 
-  _onStoreChange() {
+  _onStoreChange(actions) {
     const result = {}
-    result.user = this.userStore.getCurrentUser()
-    this.setState(result)
+    const authEvents = ['CHANGE_AVATAR_SUCCESS']
+    if (authEvents.includes(actions.event)) {
+      result.msg = actions.msg
+      result.user = this.context.getStore(UserStore).getCurrentUser()
+      result.visible = false
+    }
+
+    if (Object.keys(result).length) {
+      this.setState(result, () => {
+        const inputDom = document.querySelector('input[type=file]')
+        inputDom.value = ''
+      })
+    }
   }
 
   handleOk() {
     this.fileUpload()
-    this.setState({
-      visible: false
-    }, () => {
-      const inputDom = document.querySelector('input[type=file]')
-      inputDom.value = ''
-    })
   }
 
   handleCancel() {
@@ -53,23 +60,6 @@ class MyProfile extends React.Component {
       const inputDom = document.querySelector('input[type=file]')
       inputDom.value = ''
     })
-  }
-
-  changeFile(e) {
-    const file = e.target.files[0]
-    const preview = document.querySelector('.previewAvator')
-    const reader = new FileReader()
-    reader.addEventListener('load', () => {
-      this.setState({
-        avatar: file,
-        visible: true
-      }, () => {
-        preview.src = reader.result
-      })
-    }, false)
-    if (file) {
-      reader.readAsDataURL(file)
-    }
   }
 
   previewAvatar(e) {
@@ -101,7 +91,7 @@ class MyProfile extends React.Component {
 
   render() {
     const { user, visible } = this.state
-    console.log('visible ========', visible)
+    const timeStamp = new Date().getTime()
     return (
       <div>
         <div className="userInfo">
@@ -113,7 +103,9 @@ class MyProfile extends React.Component {
               <div className="text"><Icon type="camera-o" /><br /> Change Avator</div>
               <a><input className="avatorUpload" name="avatar" type="file" onChange={(e) => this.previewAvatar(e)} /></a>
             </div>
-            <img className="avatorImg" src="/imgs/avator.jpg" alt="" />
+            {user &&
+              <img className="avatorImg" src={`http://localhost:9000${user.images.avatar}?timeStamp=${timeStamp}`} alt="" />
+            }
           </div>
           <div className="userDescription">
             <h1 style={{ marginBottom: 0 }}>{user && user.name}</h1>
@@ -124,12 +116,13 @@ class MyProfile extends React.Component {
           userContent
         </div>
         <Modal
-          visible={this.state.visible}
+          visible={visible}
           onOk={() => this.handleOk()}
           onCancel={() => this.handleCancel()}
         >
           <div className="cutOff-avator">
             <img className="previewAvator" src="" alt="" style={{ width: '100%', maxHeight: '400px' }} />
+            <span>{this.state.msg}</span>
           </div>
         </Modal>
       </div>

@@ -53,10 +53,11 @@ export default {
       url: `/api/users/${payload.user._id}/avatar?fieldname=avatar`,
       data: payload.content
     }).then((response) => {
-      console.log(response)
+      actionContext.dispatch('CHANGE_AVATAR_SUCCESS', response.data)
       done()
     }).catch((error) => {
       console.log(error)
+      done()
     })
   },
 
