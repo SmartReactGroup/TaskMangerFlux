@@ -1,6 +1,6 @@
 import React from 'react'
-import Router from 'react-router'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router'
 import { Layout } from 'antd'
 import { Nav } from '../components'
 import { UserStore } from '../stores'
@@ -61,4 +61,4 @@ class App extends React.Component {
   }
 }
 
-export default Router.withRouter(App)
+export default withRouter(App)
