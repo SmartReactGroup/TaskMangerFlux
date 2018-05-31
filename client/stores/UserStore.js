@@ -28,6 +28,14 @@ class UserStore extends BaseStore {
     })
   }
 
+  authFailed() {
+    this.user = null
+    this.emitChange({
+      event: 'AUTHORIZATION_FAILED',
+      msg: 'Account session expired, login again please'
+    })
+  }
+
   registerSuccess(user) {
     this.user = user
     this.emitChange({

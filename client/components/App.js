@@ -1,9 +1,10 @@
 import React from 'react'
-import { withRouter } from 'react-router'
+import Router from 'react-router'
 import PropTypes from 'prop-types'
 import { Layout } from 'antd'
 import { Nav } from '../components'
-// import { UserStore } from '../stores'
+import { UserStore } from '../stores'
+import { Message } from '../utils'
 
 const { Header, Content, Footer } = Layout
 
@@ -14,6 +15,31 @@ class App extends React.Component {
     location: PropTypes.object,
     history: PropTypes.object
   }
+
+  static contextTypes = {
+    getStore: PropTypes.func,
+    executeAction: PropTypes.func
+  }
+
+  constructor(props, context) {
+    super(props)
+    this.context = context
+  }
+
+  _onStoreChange(action) {
+    if (action.event === 'AUTHORIZATION_FAILED') {
+      Message.warning(action.msg, () => this.props.history.push('/'))
+    }
+  }
+
+  componentDidMount() {
+    this.context.getStore(UserStore).addChangeListener(this._onStoreChange)
+  }
+
+  componentWillUnmount() {
+    this.context.getStore(UserStore).removeChangeListener(this._onStoreChange)
+  }
+
 
   render() {
     const appInitData = Object.assign({}, { name: 'TaskManger' })
@@ -35,4 +61,4 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App)
+export default Router.withRouter(App)

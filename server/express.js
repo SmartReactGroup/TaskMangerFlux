@@ -40,6 +40,7 @@ const MongoStore = connectMongo(session)
 server.use(
   session({
     secret: 'secret',
+    name: 'tmfcs', // taks manager client session
     store: new MongoStore(serverConfig.session),
     resave: false,
     saveUninitialized: false
@@ -104,6 +105,8 @@ server.use((req, res) => {
       })
       .catch((err) => {
         console.error(err.toString())
+        context.getStore('UserStore').authFailed()
+        serverRender()
       })
   } else {
     serverRender()
