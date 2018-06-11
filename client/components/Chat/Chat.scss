@@ -1,0 +1,103 @@
+.ant-layout-sider-children {
+  height: 72%;
+}
+
+.ant-layout-content {
+  position: relative;
+}
+
+.chat-container {
+  margin: 10px 70px;
+}
+
+.chat-box {
+  position: relative;
+}
+
+.chat-message {
+  height: 72%;
+  padding: 20px 0;
+}
+
+.chat-typing {
+  border-top: 1px solid #e8e8e8;
+  .ant-input {
+    width: 80%;
+    border: none;
+    border-radius: 0px;
+    padding: 25px 10px;
+    display: inline-block;
+    margin-right: 30px;
+  }
+}
+
+.ant-layout-sider {
+  overflow: auto;
+}
+
+.chat-status {
+  position: absolute;
+  top: 20px;
+  left: 85px;
+}
+
+.ant-dropdown-link {
+  color: white;
+}
+
+.messages {
+  list-style: none;
+  overflow: scroll;
+  height: 100%;
+  padding: 0 20px;
+  .message {
+    position: relative;
+    margin: 20px 0;
+    &.message-right {    
+      text-align: right;
+      clear: both;
+      float: right;
+      display: flex;
+      align-items: baseline;
+      .message-chatbox {
+        .message-content {
+          padding: 10px 15px;
+          margin-right: 20px;
+          background: #e8f7ff;
+          border-radius: 8px;
+        } 
+        .triangle {
+          position: absolute;
+          right: 50px;
+          top: 17px;
+          border-bottom: 20px solid #e8f7ff;
+          border-right: 20px solid transparent;
+        }
+      }    
+    }
+    &.message-left {
+      clear: both;
+      float: left;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: baseline;
+      .message-chatbox {
+        margin-left: 20px;
+        .message-content {
+          padding: 10px 15px;
+          margin-right: 25px;
+          background: #e8f7ff;
+          border-radius: 8px;
+        } 
+        .triangle {
+          position: absolute;
+          left: 45px;
+          top: 17px;
+          border-bottom: 20px solid #e8f7ff;
+          border-left: 20px solid transparent;
+        }
+      } 
+    }    
+    
+  }
+}

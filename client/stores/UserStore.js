@@ -66,7 +66,8 @@ class UserStore extends BaseStore {
     })
   }
 
-  changeUserInfo() {
+  changeUserInfo(user) {
+    this.user = user
     this.emitChange({
       event: 'CHANGE_USER_INFO'
     })
@@ -117,6 +118,7 @@ UserStore.handlers = {
   CHANGE_PASSWORD_FAILED: 'changePasswordFailed',
   CHANGE_USER_INFO: 'changeUserInfo',
   CHANGE_AVATAR_SUCCESS: 'changeAvatar',
+  AUTHORIZATION_FAILED: 'authFailed',
   LOGOUT: 'logout'
 }
 

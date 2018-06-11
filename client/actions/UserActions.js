@@ -12,7 +12,7 @@ const USER_URI = {
 export default {
   Login: (actionContext, payload, done) => {
     HttpClient.post(USER_URI.LOGIN, payload).then(() => {
-      HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
+      HttpClient.get(USER_URI.LOAD_SESSION).then((res) => {
         actionContext.dispatch('LOGIN_SUCCESS', res.data)
         done()
       })
@@ -23,7 +23,7 @@ export default {
   },
 
   LoadSession: (actionContext, payload, done) => {
-    HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
+    HttpClient.get(USER_URI.LOAD_SESSION).then((res) => {
       if (res) {
         actionContext.dispatch('LOAD_SESSION_SUCCESS', res.data)
       }
@@ -36,7 +36,7 @@ export default {
 
   Register: (actionContext, payload, done) => {
     HttpClient.post(USER_URI.REGISTER, payload).then(() => {
-      HttpClient.post(USER_URI.LOAD_SESSION).then((res) => {
+      HttpClient.get(USER_URI.LOAD_SESSION).then((res) => {
         actionContext.dispatch('REGISTER_SUCCESS', res.data)
         done()
       })
@@ -62,7 +62,7 @@ export default {
   },
 
   ChangePassword: (actionContext, payload, done) => {
-    HttpClient.post(`${USER_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
+    HttpClient.put(`${USER_URI.USERS}/${payload.user._id}/password`, payload).then((res) => {
       actionContext.dispatch('CHANGE_PASSWORD_SUCCESS', res.data)
       done()
     }).catch((err) => {
@@ -73,7 +73,7 @@ export default {
   },
 
   ChangeUserInfo: (actionContext, payload, done) => {
-    HttpClient.post(`${USER_URI.USERS}/${payload.user._id}/userinfo`, payload).then((res) => {
+    HttpClient.put(`${USER_URI.USERS}/${payload.user._id}/userinfo`, payload).then((res) => {
       actionContext.dispatch('CHANGE_USER_INFO', res.data)
       done()
     }).catch((err) => {

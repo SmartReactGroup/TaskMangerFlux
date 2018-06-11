@@ -1,9 +1,37 @@
-// .ant-menu-submenu {
-//   &.ant-menu-submenu-horizontal {
-//     &.ant-menu-submenu-open {
-//       &.ant-menu-submenu-active {
-//         line-height: 50px;
-//       }
-//     }
-//   }
-// }
+.ant-menu-item {
+  &.ant-menu-item-selected {
+    a {
+      &.active {
+        color: #1890ff;
+      }
+    }
+  }
+}
+
+.ant-menu-item.ant-menu-item-selected {
+  border-bottom: none;
+}
+
+.ant-menu-horizontal > .ant-menu-item.ant-menu-item-active:hover {
+  border-bottom: none;
+}
+
+.ant-menu-item.Login {
+    float: right;
+}
+
+.ant-menu-item {
+    &.TaskManager {
+        a {
+            color: #07baf5;
+            font-size: 25px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: Hanzipen SC;
+        }
+    }
+}
+
+i.fas {
+    margin-right: 4px;
+}

@@ -2,6 +2,7 @@
   height: 280px;
   background: white;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .profile-img {
@@ -26,8 +27,8 @@
   height: 180px;
   background: #e8e8e8;
   position: absolute;
-  top: 180px;
-  left: 70px;
+  top: 90px;
+  left: 10px;
   border-radius: 90px;
   border: 5px solid white;
 }
@@ -44,23 +45,6 @@
   background: rgba(0,0,0,.5)
 }
 
-.changeAvator {
-  background: #8e8b8b2b;
-  position: relative;
-  height: 240px;
-}
-
-.change-overlay {
-  transition: .5s ease;
-  position: absolute;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  content: " ";
-  opacity: 0;
-  text-align: center;
-  cursor: pointer;
-}
 .text {
   position: absolute;
   width: 100%;
@@ -72,7 +56,7 @@
   border-radius: 90px;
 }
 
-.anticon.anticon-camera-o, .anticon-eye-o{
+.anticon.anticon-camera-o{
   font-size: 30px; 
   cursor: pointer;
 }
@@ -84,15 +68,6 @@
 .userAvator:hover .avatorImg{
   opacity: 1;
 }
-
-.changeAvator:hover .change-overlay{
-  opacity: 1;
-}
-
-.changeAvator:hover .previewAvator{
-  opacity: 0.6;
-}
-
 
 .backgroundImg {
   width: 100%;
@@ -113,23 +88,20 @@
   background: #f5f5f5;
   display: table-cell;
   vertical-align: middle;
+  position: relative;
 }
 
-.userDescription {
+.userProfile {
   padding-left: 32px;
   border-left: 174px solid transparent;
+  display: flex;
+  display: -webkit-flex; /* Safari */
+  justify-content: space-between;/*两端对齐，项目之间的间隔都相等。*/
+  align-items: baseline; /*项目的第一行文字的基线对齐*/
 }
 
-.anticon.anticon-info-circle {
-  display: none;
-}
-
-.ant-confirm-body .ant-confirm-title {
-  text-align: center;
-}
-
-.ant-confirm-content {
-  margin-right: 38px;
+.edit-profile {
+  margin-right: 2px;
 }
 
 .cutOff-tools {
@@ -153,8 +125,15 @@
   vertical-align: middle;
 }
 
-// .avatorImg {
-//   width: 160px;
-//   height: 160px;
-//   border-radius: 80px;
-// }
+.cutOff-container {
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  position: absolute;
+  overflow: hidden;
+  z-index: 1;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}

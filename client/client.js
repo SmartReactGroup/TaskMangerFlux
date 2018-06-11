@@ -4,12 +4,15 @@ import { Router } from 'react-router'
 import ReactDOM from 'react-dom'
 import debug from 'debug'
 import concurrent from 'contra/concurrent'
+import openSocket from 'socket.io-client'
 import CustomFluxibleComponent from './components/CustomFluxibleComponent'
+
 
 import app from './app'
 import './components/app.scss'
 import { createRoutes, extractRoutesMetadata } from '../server/routes'
 import { browserHistory } from './utils/historyUtils'
+
 
 const debugClient = debug('taskmangerflux')
 const dehydratedState = window.__DATA__
@@ -17,6 +20,8 @@ const dehydratedState = window.__DATA__
 // https://github.com/visionmedia/debug#browser-support
 window.fluxibleDebug = debug
 window.React = ReactDOM // For chrome dev tool support
+window.Socket = openSocket.connect()
+
 
 debugClient('rehydrating app')
 

@@ -9,6 +9,7 @@ import express from 'express'
 import compression from 'compression'
 import bodyParser from 'body-parser'
 import path from 'path'
+import http from 'http'
 import serialize from 'serialize-javascript'
 import session from 'express-session'
 import connectMongo from 'connect-mongo'
@@ -17,11 +18,11 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import axios from 'axios'
 import concurrent from 'contra/concurrent'
+import socketio from 'socket.io'
 import { StaticRouter } from 'react-router'
-
 import CustomFluxibleComponent from '../client/components/CustomFluxibleComponent'
 import assets from '../configs/assets'
-import app from '../client/app'
+import clientApp from '../client/app'
 import HtmlComponent from '../client/components/Html'
 import serverConfig from '../configs/server'
 import errors from './components/errors'
@@ -29,29 +30,28 @@ import { API } from './api/user/service'
 import { createRoutes, extractRoutesMetadata } from './routes'
 
 const env = process.env.NODE_ENV
-const server = express()
-const publicPath = path.join(__dirname, '..', 'client', 'assets')
+const app = express()
 
-server.use(express.static(publicPath))
-server.use(compression())
-server.use(bodyParser.json())
+app.use(express.static(path.join(__dirname, '..', 'client', 'assets')))
+app.use(compression())
+app.use(bodyParser.json())
 
 const MongoStore = connectMongo(session)
-server.use(
-  session({
-    secret: 'secret',
-    name: 'tmfcs', // taks manager client session
-    store: new MongoStore(serverConfig.session),
-    resave: false,
-    saveUninitialized: false
-  })
-)
+app.use(session({
+  secret: 'secret',
+  name: 'tmfcs', // taks manager client session
+  store: new MongoStore(serverConfig.session),
+  resave: false,
+  saveUninitialized: false
+}))
 
 // eslint-disable-next-line
-server.use('/api/users', require('./api/user'))
-server.route('/:url(api|auth|components|app|assets)/*').get(errors[404])
-server.use((req, res) => {
-  const context = app.createContext({ req, res })
+app.use('/api/users', require('./api/user'))
+app.use('/api/groups', require('./api/group'))
+
+app.route('/:url(api|auth|components|app|assets)/*').get(errors[404])
+app.use((req, res) => {
+  const context = clientApp.createContext({ req, res })
   const serverRender = () => {
     // todo
     // 1. convert all fetchData function to promise
@@ -73,7 +73,7 @@ server.use((req, res) => {
         </CustomFluxibleComponent>
       )
 
-      const exposed = `window.__DATA__=${serialize(app.dehydrate(context))}`
+      const exposed = `window.__DATA__=${serialize(clientApp.dehydrate(context))}`
       const wrapperHTML = ReactDOMServer.renderToString(
         <HtmlComponent assets={assets} markup={appHTML} exposed={exposed} />
       )
@@ -114,6 +114,20 @@ server.use((req, res) => {
 })
 
 const port = process.env.PORT || serverConfig.port || 3000
+const server = http.createServer(app)
+const io = socketio(server)
+
+io.on('connection', (socket) => {
+  socket.on('new:message', (msgObj) => {
+    console.log(msgObj)
+    socket.join(msgObj.user)
+    socket.broadcast.emit('receive:message', msgObj)
+  })
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
+})
+
 server.listen(port, () => {
   const dateNow = new Date()
   const dateString = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`

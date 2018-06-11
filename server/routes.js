@@ -2,7 +2,9 @@
 import React from 'react'
 import { Switch } from 'react-router'
 import { Route, matchPath, Redirect } from 'react-router-dom'
-import { Home, About, Login, Register, MyProfile, Settings } from '../client/components'
+import { Home, Tasks, Login, Register, Settings, Chat, Documents } from '../client/components'
+import EditProfile from '../client/components/MyProfile/EditProfile'
+import MyProfile from '../client/components/MyProfile/MyProfile'
 import { pathPrefix } from '../configs'
 import App from '../client/components/App'
 
@@ -36,8 +38,12 @@ const routesConfig = [{
       component: Login
     },
     {
-      path: '/about',
-      component: About
+      path: '/tasks',
+      component: Tasks
+    },
+    {
+      path: '/documents',
+      component: Documents
     },
     {
       path: '/register',
@@ -56,6 +62,14 @@ const routesConfig = [{
           component: Settings
         }
       ]
+    },
+    {
+      path: '/me/edit',
+      component: EditProfile
+    },
+    {
+      path: '/chat',
+      component: Chat
     }
   ]
 }]

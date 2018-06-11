@@ -50,7 +50,7 @@ class App extends React.Component {
           <div className="logo" />
           <Nav currentLocation={this.props.location} history={this.props.history} />
         </Header>
-        <Content style={{ padding: '10px 50px', background: '#f0f2f5', marginTop: '10px' }}>
+        <Content style={{ background: '#f0f2f5'}}>
           {childs}
         </Content>
         <Footer style={{ textAlign: 'center' }}>

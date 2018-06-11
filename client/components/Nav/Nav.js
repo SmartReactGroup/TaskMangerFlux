@@ -1,10 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { Menu, Icon, message } from 'antd'
+import { Menu, Icon } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { UserStore } from '../../stores'
 import { UserActions } from '../../actions'
+import { Message } from '../../utils'
 
 class Nav extends React.Component {
 
@@ -26,11 +27,13 @@ class Nav extends React.Component {
     const currentUser = this.context.getStore(UserStore).getCurrentUser()
     this.state = {
       staticNavItems: [
-        { path: '/', name: 'Home' },
-        { path: '/about', name: 'About' }
+        { path: '/', name: 'TaskManager', icon: 'fa-home' },
+        { path: '/tasks', name: 'Tasks', icon: 'fa-tasks' },
+        { path: '/documents', name: 'Docs', icon: 'fa-file-alt' }
       ],
       dynamicNavItems: [
-        { path: '/login', name: 'Login', hide: currentUser }
+        { path: '/login', name: 'Login', hide: currentUser, icon: 'fa-user-alt' },
+        { path: '/chat', name: 'Chats', hide: !currentUser, icon: 'fa-comments' }
       ],
       currentUser
     }
@@ -51,13 +54,19 @@ class Nav extends React.Component {
       'LOGIN_SUCCESS',
       'LOGOUT',
       'REGISTER_FAILED',
-      'REGISTER_SUCCESS'
+      'REGISTER_SUCCESS',
+      'CHANGE_USER_INFO'
     ]
     if (authEvents.includes(actions.event)) {
       const dynamicNavItems = _.cloneDeep(this.state.dynamicNavItems)
       result.currentUser = this.context.getStore(UserStore).getCurrentUser()
       result.dynamicNavItems = dynamicNavItems.map((item) => {
-        item.hide = result.currentUser
+        if (item.name === 'Login') {
+          item.hide = result.currentUser
+        }
+        if (item.name === 'Chats') {
+          item.hide = !result.currentUser
+        }
         return item
       })
     }
@@ -66,7 +75,7 @@ class Nav extends React.Component {
       this.setState(result, () => {
         if (actions.event === 'LOGOUT') {
           this.props.history.push('/')
-          message.success('Logout successfully')
+          Message.success('Logout successfully')
         }
       })
     }
@@ -94,7 +103,7 @@ class Nav extends React.Component {
         style={{ lineHeight: '63px', borderBottom: 'none', background: 'none' }}
       >
         {activeNavItems.map((navItem) =>
-          <Menu.Item key={navItem.path}><NavLink to={navItem.path}>{navItem.name}</NavLink></Menu.Item>
+          <Menu.Item className={navItem.name} key={navItem.path}><NavLink to={navItem.path}><i className={`fas ${navItem.icon}`} />{navItem.name}</NavLink></Menu.Item>
         )}
 
         {currentUser &&

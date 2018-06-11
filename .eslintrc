@@ -43,6 +43,7 @@
     "alert": true,
     "localStorage": true,
     "FormData": true,
-    "FileReader": true
+    "FileReader": true,
+    "Socket": true
   }
 }

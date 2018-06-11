@@ -1,15 +1,14 @@
 import React from 'react'
-import { Form, Input, Button, Tabs, Icon, message } from 'antd'
+import { Form, Input, Button, Icon } from 'antd'
 import PropTypes from 'prop-types'
 import UserActions from '../../actions/UserActions'
 import { UserStore } from '../../stores'
-import { WarningBanner } from '../../components'
+import { Message } from '../../utils'
 
 const FormItem = Form.Item
-const { TabPane } = Tabs
 const { TextArea } = Input
 
-class Settings extends React.Component {
+class EditProfile extends React.Component {
   static propTypes = {
     form: PropTypes.object,
     history: PropTypes.object
@@ -25,9 +24,6 @@ class Settings extends React.Component {
     this.context = context
     this.state = {
       user: this.context.getStore(UserStore).getCurrentUser(),
-      showMsg: false,
-      warningBarType: '',
-      msg: '',
       changeUsername: false
     }
     this._onStoreChange = this._onStoreChange.bind(this)
@@ -43,45 +39,31 @@ class Settings extends React.Component {
 
   _onStoreChange(actions) {
     const result = {}
-    const authEvent = ['CHANGE_PASSWORD_SUCCESS', 'CHANGE_PASSWORD_FAILED']
+    const authEvent = ['CHANGE_USER_INFO']
     if (authEvent.includes(actions.event)) {
       result.showMsg = true
       result.msg = actions.msg
-      if (actions.event === 'CHANGE_PASSWORD_SUCCESS') {
-        result.warningBarType = 'success'
-      }
-      if (actions.event === 'CHANGE_PASSWORD_FAILED') {
-        result.warningBarType = 'error'
-      }
+      result.user = this.context.getStore(UserStore).getCurrentUser()
     }
     if (Object.keys(result).length) {
-      this.setState(result)
+      this.setState(result, () => {
+        if (actions.event === 'CHANGE_USER_INFO') {
+          Message.success('Save successfully')
+        }
+      })
     }
-  }
-
-  changePassword(e) {
-    e.preventDefault()
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        values.user = this.state.user
-        this.context.executeAction(UserActions.ChangePassword, values)
-      }
-    })
   }
 
   changeUserInfo(e) {
     e.preventDefault()
-    const value = { name: this.props.form.getFieldValue('username') }
-    value.user = this.state.user
-    this.context.executeAction(UserActions.ChangeUserInfo, value)
+    this.context.executeAction(UserActions.ChangeUserInfo, {
+      name: this.props.form.getFieldValue('username'),
+      user: this.state.user
+    })
   }
 
   editUsername() {
     this.setState({ changeUsername: true })
-  }
-
-  onClose() {
-    this.setState({ showMsg: false })
   }
 
 
@@ -111,36 +93,30 @@ class Settings extends React.Component {
     }
     return (
       <div className="setting-page" style={{ padding: '24px', background: 'white' }}>
-        <Form onSubmit={(e) => this.changePassword(e)}>
-          <FormItem {...formItemLayout} label="Old password">
-            {getFieldDecorator('oldPassword', {
-              rules: [{
-                required: true,
-                message: 'Please input your password!'
-              }]
-            })(<Input type="password" />)}
+        <h2>Edit My Profile</h2>
+        <Form onSubmit={(e) => this.changeUserInfo(e)}>
+          <FormItem {...formItemLayout} label="user name">
+            <span style={{ paddingRight: '10px' }}>{this.state.user.name}</span>
+            {!this.state.changeUsername &&
+              <a className="editUsername" onClick={() => this.editUsername()}><Icon type="edit" />modify</a>
+            }
+            {this.state.changeUsername && getFieldDecorator('username')(<Input type="text" />) }
           </FormItem>
-          <FormItem {...formItemLayout} label="New password">
-            {getFieldDecorator('newPassword', {
-              rules: [{
-                required: true,
-                message: 'Please input your password!'
-              }]
-            })(<Input type="password" />)}
+          <FormItem {...formItemLayout} label="personal signature">
+            {getFieldDecorator('signature')(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
           </FormItem>
           <FormItem {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
-              Change
+              Save
             </Button>
           </FormItem>
-          {this.state.showMsg && <WarningBanner msg={this.state.msg} type={this.state.warningBarType} onClose={() => this.onClose()} />}
         </Form>
       </div>
     )
   }
 }
 
-const SettingForm = Form.create()(Settings)
+const EditProfileForm = Form.create()(EditProfile)
 
-export default SettingForm
+export default EditProfileForm
 

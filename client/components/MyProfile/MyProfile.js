@@ -1,8 +1,10 @@
 import React from 'react'
-import { Icon, Modal } from 'antd'
+import { NavLink } from 'react-router-dom'
+import { Icon, Modal, Button } from 'antd'
 import PropTypes from 'prop-types'
 import { UserStore } from '../../stores'
 import UserActions from '../../actions/UserActions'
+import { Message } from '../../utils'
 
 class MyProfile extends React.Component {
 
@@ -20,8 +22,7 @@ class MyProfile extends React.Component {
     this.state = {
       user: this.userStore.getCurrentUser(),
       avatar: null,
-      visible: false,
-      msg: ''
+      visible: false
     }
   }
   componentDidMount() {
@@ -45,6 +46,7 @@ class MyProfile extends React.Component {
       this.setState(result, () => {
         const inputDom = document.querySelector('input[type=file]')
         inputDom.value = ''
+        Message.success('Change successfully')
       })
     }
   }
@@ -107,9 +109,14 @@ class MyProfile extends React.Component {
               <img className="avatorImg" src={`http://localhost:9000${user.images.avatar}?timeStamp=${timeStamp}`} alt="" />
             }
           </div>
-          <div className="userDescription">
-            <h1 style={{ marginBottom: 0 }}>{user && user.name}</h1>
-            <p>Here is user description</p>
+          <div className="userProfile">
+            <div className="user-introduce">
+              <h1 style={{ marginBottom: 0 }}>{user && user.name}</h1>
+              <p>Here is user description</p>
+            </div>
+            <div className="edit-profile">
+              <Button><NavLink to="/me/edit">Edit My Profile</NavLink></Button>
+            </div>
           </div>
         </div>
         <div className="userContent">
@@ -122,7 +129,11 @@ class MyProfile extends React.Component {
         >
           <div className="cutOff-avator">
             <img className="previewAvator" src="" alt="" style={{ width: '100%', maxHeight: '400px' }} />
-            <span>{this.state.msg}</span>
+            <div className="cutOff-container">
+              <div className="cutOff-container-box">
+                <span />
+              </div>
+            </div>
           </div>
         </Modal>
       </div>

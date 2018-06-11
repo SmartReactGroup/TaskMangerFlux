@@ -1,0 +1,31 @@
+.home-container {
+    background: #2895ff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .home-introduce {
+        margin: 150px 0 0 0;
+        .home-title {
+            text-align: center;
+            color: white;
+            font-size: 50px;
+            font-family: monospace;
+        }
+    } 
+    .home-row {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 50px;
+        div {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 100px;
+        }    
+    }  
+}
+
+.ant-layout-content {
+    padding: 0 !important;
+    margin-top: 0 !important;
+}
